@@ -1,39 +1,62 @@
-# Start from small but feature-complete distro to avoid missing libs
+# backend/Dockerfile.dev
 FROM ubuntu:22.04
 
+# Set up non-interactive mode for apt
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install build prerequisites
 RUN apt-get update && apt-get install -y \
-    build-essential cmake g++ git wget curl \
-    libboost-all-dev libssl-dev libpq-dev libpqxx-dev libasio-dev \
+    build-essential \
+    cmake \
+    g++ \
+    git \
+    gdb \
+    vim \
+    wget \
+    clang \
+    ca-certificates \
+    curl \
+    libboost-all-dev \
+    libssl-dev \
+    libpq-dev \
+    libpqxx-dev \
+    libasio-dev \
     && rm -rf /var/lib/apt/lists/*
 
-
-# Copy project files
 WORKDIR /app
-COPY . /app
 
-# If you used submodule, make sure it's initialized; otherwise the headers should be present
-# Build
-RUN cmake -B build -S . && cmake --build build -- -j$(nproc)
-
-EXPOSE 8080
-CMD ["./build/condo_backend"]
-
-# # Environment variables for Crow
-# ENV CROW_INCLUDE_DIR=/opt/crow/include
-
-# # Default command
-# CMD ["/bin/bash"]
+# Keep the container running indefinitely
+# (this way you can exec into it, build and run manually)
+CMD ["tail", "-f", "/dev/null"]
 
 
-# Why these choices
 
-# Ubuntu base ensures predictable packages.
+# # --- Stage 1: build image ---
+# FROM ubuntu:22.04 AS builder
+# ENV DEBIAN_FRONTEND=noninteractive
 
-# We install libpq-dev and libpqxx-dev so compiled binary can link against Postgres client libs.
+# RUN apt-get update && apt-get install -y \
+#     build-essential cmake g++ git wget ca-certificates curl \
+#     libboost-all-dev libssl-dev libpq-dev libpqxx-dev libasio-dev \
+#     && rm -rf /var/lib/apt/lists/*
 
-# Building inside Docker gives a reproducible dev image identical to CI.
+# WORKDIR /app
+# COPY . /app
 
+# # # Build
+# # RUN cmake -B build -S . && cmake --build build -- -j$(nproc)
 
+# # Create a build directory and build
+# RUN mkdir -p build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && cmake --build . -- -j$(nproc)
+
+# # --- Stage 2: runtime image ---
+# FROM ubuntu:22.04
+# FROM debian:bookworm-slim
+# RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+# # RUN apt-get update && apt-get install -y libboost-all-dev libssl-dev libpqxx-dev && rm -rf /var/lib/apt/lists/*
+
+# WORKDIR /app
+# # COPY --from=builder /app/build/condo_backend /app/condo_backend
+# COPY --from=builder /app/build/bin/condo_backend /app/condo_backend
+
+# EXPOSE 8080
+# CMD ["./condo_backend"]
