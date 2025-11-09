@@ -5,12 +5,15 @@ The current setup uses a **development container** that runs indefinitely, so yo
 
 ---
 
-## 1. Build the Development Image
+<!-- ## 1. Build the Development Image
 
 Build the image defined in `backend/Dockerfile.dev`:
 
+Dockerfile.dev → long-running container, with your code mounted from host
+Used for development, live editing, debugging, and compiling interactively. -->
+
 ```bash
-docker build -t cpp-dev -f backend/Dockerfile .
+docker build -t cpp-dev -f backend/Dockerfile.dev .
 # -t cpp-dev: names the image (cpp-dev)
 # -f backend/Dockerfile.dev: tells Docker which file to use
 # The image includes compilers, CMake, gdb, and basic tools.
@@ -50,3 +53,14 @@ Rebuild image	                   docker build -t cpp-dev -f backend/Dockerfile.d
 Remove image	                   docker rmi cpp-dev
 List running containers	           docker ps
 Open new terminal in container	   docker exec -it cpp-dev-container bash
+
+
+
+# Dockerfile → multi-stage build, that compiles and packages your app into a clean, minimal runtime image
+# Used for production, testing, and CI/CD pipelines.
+
+# Build image (production / CI)
+docker build -t cpp-prod -f backend/Dockerfile backend
+
+# Run the container
+docker run -d -p 8080:8080 --name cpp-prod-container cpp-prod

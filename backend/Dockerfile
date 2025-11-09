@@ -1,9 +1,23 @@
-# backend/Dockerfile.dev
-FROM ubuntu:22.04
+# backend/Dockerfile
 
-# Set up non-interactive mode for apt
+# Stage 1 (build)
+# Installs everything needed to compile (gcc, cmake, etc.).
+# Compiles your C++ binary.
+
+# Stage 2 (runtime)
+# Starts from a clean Ubuntu image (no compiler).
+# Copies only the built binary.
+# The final image is much smaller and more secure.
+
+# ==========
+# Stage 1: Build
+# ==========
+FROM ubuntu:22.04 AS build
+
+# Non-interactive mode for apt
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Install dependencies for building C++
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -22,41 +36,29 @@ RUN apt-get update && apt-get install -y \
     libasio-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Set workdir
 WORKDIR /app
 
-# Keep the container running indefinitely
-# (this way you can exec into it, build and run manually)
-CMD ["tail", "-f", "/dev/null"]
+# Copy the source code
+COPY . .
 
+# Create a build directory and compile
+RUN mkdir -p build && cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make -j$(nproc)
 
+# ==========
+# Stage 2: Runtime
+# ==========
+FROM ubuntu:22.04 AS runtime
 
-# # --- Stage 1: build image ---
-# FROM ubuntu:22.04 AS builder
-# ENV DEBIAN_FRONTEND=noninteractive
+WORKDIR /app
 
-# RUN apt-get update && apt-get install -y \
-#     build-essential cmake g++ git wget ca-certificates curl \
-#     libboost-all-dev libssl-dev libpq-dev libpqxx-dev libasio-dev \
-#     && rm -rf /var/lib/apt/lists/*
+# Copy the compiled binary from build stage
+COPY --from=build /app/build/bin/condo_backend .
 
-# WORKDIR /app
-# COPY . /app
+# Expose backend port
+EXPOSE 8080
 
-# # # Build
-# # RUN cmake -B build -S . && cmake --build build -- -j$(nproc)
-
-# # Create a build directory and build
-# RUN mkdir -p build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && cmake --build . -- -j$(nproc)
-
-# # --- Stage 2: runtime image ---
-# FROM ubuntu:22.04
-# FROM debian:bookworm-slim
-# RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-# # RUN apt-get update && apt-get install -y libboost-all-dev libssl-dev libpqxx-dev && rm -rf /var/lib/apt/lists/*
-
-# WORKDIR /app
-# # COPY --from=builder /app/build/condo_backend /app/condo_backend
-# COPY --from=builder /app/build/bin/condo_backend /app/condo_backend
-
-# EXPOSE 8080
-# CMD ["./condo_backend"]
+# Define the startup command
+CMD ["./condo_backend"]

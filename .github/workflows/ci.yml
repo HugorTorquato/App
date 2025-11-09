@@ -23,3 +23,7 @@ jobs:
 
       - name: Smoke test backend
         run: echo "Add unit tests and integration tests later"
+
+      - name: Build Docker image
+        run: docker build -t cpp-prod -f backend/Dockerfile backend
+

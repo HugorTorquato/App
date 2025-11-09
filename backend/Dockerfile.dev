@@ -1,0 +1,62 @@
+# backend/Dockerfile.dev
+FROM ubuntu:22.04
+
+# Set up non-interactive mode for apt
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    g++ \
+    git \
+    gdb \
+    vim \
+    wget \
+    clang \
+    ca-certificates \
+    curl \
+    libboost-all-dev \
+    libssl-dev \
+    libpq-dev \
+    libpqxx-dev \
+    libasio-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Keep the container running indefinitely
+# (this way you can exec into it, build and run manually)
+CMD ["tail", "-f", "/dev/null"]
+
+
+
+# # --- Stage 1: build image ---
+# FROM ubuntu:22.04 AS builder
+# ENV DEBIAN_FRONTEND=noninteractive
+
+# RUN apt-get update && apt-get install -y \
+#     build-essential cmake g++ git wget ca-certificates curl \
+#     libboost-all-dev libssl-dev libpq-dev libpqxx-dev libasio-dev \
+#     && rm -rf /var/lib/apt/lists/*
+
+# WORKDIR /app
+# COPY . /app
+
+# # # Build
+# # RUN cmake -B build -S . && cmake --build build -- -j$(nproc)
+
+# # Create a build directory and build
+# RUN mkdir -p build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release && cmake --build . -- -j$(nproc)
+
+# # --- Stage 2: runtime image ---
+# FROM ubuntu:22.04
+# FROM debian:bookworm-slim
+# RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+# # RUN apt-get update && apt-get install -y libboost-all-dev libssl-dev libpqxx-dev && rm -rf /var/lib/apt/lists/*
+
+# WORKDIR /app
+# # COPY --from=builder /app/build/condo_backend /app/condo_backend
+# COPY --from=builder /app/build/bin/condo_backend /app/condo_backend
+
+# EXPOSE 8080
+# CMD ["./condo_backend"]
