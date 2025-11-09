@@ -45,7 +45,8 @@ COPY . .
 # Create a build directory and compile
 RUN mkdir -p build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && \
-    make -j$(nproc)
+    make -j$(nproc) && \
+    ctest --output-on-failure
 
 # ==========
 # Stage 2: Runtime

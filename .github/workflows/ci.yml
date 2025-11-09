@@ -27,3 +27,9 @@ jobs:
       - name: Build Docker image
         run: docker build -t cpp-prod -f backend/Dockerfile backend
 
+      - name: Build and test
+        run: |
+          cmake -B build -S backend -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel
+          ctest --test-dir build --output-on-failure
+
