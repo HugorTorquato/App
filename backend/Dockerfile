@@ -43,10 +43,13 @@ WORKDIR /app
 COPY . .
 
 # Create a build directory and compile
-RUN mkdir -p build && cd build && \
+WORKDIR /app/backend
+
+RUN rm -rf build && mkdir build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) && \
     ctest --output-on-failure
+
 
 # ==========
 # Stage 2: Runtime
@@ -56,7 +59,8 @@ FROM ubuntu:22.04 AS runtime
 WORKDIR /app
 
 # Copy the compiled binary from build stage
-COPY --from=build /app/build/bin/condo_backend .
+COPY --from=build /app/backend/build/bin/condo_backend .
+
 
 # Expose backend port
 EXPOSE 8080
