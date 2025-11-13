@@ -11,60 +11,52 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1 - Checkout your code
+      # -----------------------------
+      # Checkout repository
+      # -----------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive 
+          submodules: recursive  # ensures vendor/crow is included
 
-      # 2 - Set up Docker Buildx (for advanced caching)
+      # -----------------------------
+      # Set up Docker Buildx
+      # -----------------------------
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 3 - Cache Docker layers
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      # 4 - Build the dev image (includes compilers + tests)
+      # -----------------------------
+      # Build development image
+      # Includes compilers, cmake, g++, GTest, Crow, etc.
+      # -----------------------------
       - name: Build backend (dev stage)
         run: |
           docker build \
             -f backend/Dockerfile \
-            -t condo_backend_dev \
             --target build \
-            --cache-from type=local,src=/tmp/.buildx-cache \
-            --cache-to type=local,dest=/tmp/.buildx-cache-new \
-            .
+            -t condo_backend_dev .
 
-      # 5 - Run Google Tests
+      # -----------------------------
+      # Run Google Tests
+      # Uses the same image to ensure environment parity
+      # -----------------------------
       - name: Run Google Tests
         run: |
           docker run --rm condo_backend_dev ctest --output-on-failure
 
-      # 6 - Build the production image (clean runtime)
+      # -----------------------------
+      # Build production image
+      # Smaller, minimal runtime layer only
+      # -----------------------------
       - name: Build production image
         run: |
           docker build \
             -f backend/Dockerfile \
-            -t condo_backend_prod \
             --target runtime \
-            --cache-from type=local,src=/tmp/.buildx-cache \
-            --cache-to type=local,dest=/tmp/.buildx-cache-new \
-            .
-
-      # 7 - Move cache (GitHub caching needs this)
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+            -t condo_backend_prod .
 
       # -----------------------------
-      # 6 - (Optional) Upload build artifacts
+      # (Optional) Upload build artifacts
       # Useful if you want to inspect the runtime binary later
       # -----------------------------
       # - name: Save production image artifact
