@@ -9,7 +9,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Crow header-only include
-include_directories(${CMAKE_SOURCE_DIR}/vendor/crow/include)
+include_directories(${CMAKE_SOURCE_DIR}/../vendor/crow/include)
 
 # Find and link Boost + OpenSSL + PostgreSQL client (optional)
 find_package(Boost REQUIRED)
