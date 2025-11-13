@@ -34,7 +34,8 @@ jobs:
           docker build \
             -f backend/Dockerfile \
             --target build \
-            -t condo_backend_dev .
+            -t condo_backend_dev \
+            --build-arg ENABLE_COVERAGE=ON .
 
       # -----------------------------
       # Run Google Tests
