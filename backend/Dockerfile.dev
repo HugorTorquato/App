@@ -9,8 +9,6 @@ RUN apt-get update && apt-get install -y \
     cmake \
     g++ \
     git \
-    lcov \
-    gcovr \
     gdb \
     vim \
     wget \
@@ -24,19 +22,7 @@ RUN apt-get update && apt-get install -y \
     libasio-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Set workdir
 WORKDIR /app
-
-# Copy the source code
-COPY . .
-
-# Create a build directory and compile
-WORKDIR /app/backend
-
-RUN rm -rf build && mkdir build && cd build && \
-    cmake .. -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=${ENABLE_COVERAGE} && \
-    make -j$(nproc) && \
-    ctest --output-on-failure
 
 # Keep the container running indefinitely
 # (this way you can exec into it, build and run manually)

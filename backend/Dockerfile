@@ -24,8 +24,6 @@ RUN apt-get update && apt-get install -y \
     g++ \
     git \
     gdb \
-    lcov \
-    gcovr \
     vim \
     wget \
     clang \
@@ -48,7 +46,7 @@ COPY . .
 WORKDIR /app/backend
 
 RUN rm -rf build && mkdir build && cd build && \
-    cmake .. -DCMAKE_BUILD_TYPE=Release  && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) && \
     ctest --output-on-failure
 
