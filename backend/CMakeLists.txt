@@ -5,6 +5,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(STATUS "Enabling code coverage flags for Release build")
+    add_compile_options(--coverage)
+    link_libraries(gcov)
+endif()
+
 # Put output in reasonable folder
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
