@@ -34,7 +34,7 @@ jobs:
           docker build \
             -f backend/Dockerfile \
             --target build \
-            -t condo_backend_dev
+            -t condo_backend_dev .
 
       # -----------------------------
       # Run Google Tests
