@@ -42,7 +42,7 @@ jobs:
       # -----------------------------
       - name: Run Google Tests
         run: |
-          docker run --rm condo_backend_dev ctest --output-on-failure
+          docker run --rm -w /app/backend/build condo_backend_dev ctest --output-on-failure
 
       # -----------------------------
       # Build production image
