@@ -1,35 +1,44 @@
-name: CI
+name: CI - Build and Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
-  build-backend:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      # 1 - Checkout your code
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y cmake g++ libboost-all-dev libpq-dev libpqxx-dev
+      # 2 - Set up Docker Buildx (required for multi-stage builds)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build backend
-        working-directory: backend
+      # 3 - Build the dev image (includes compilers + tests)
+      - name: Build backend (dev stage)
         run: |
-          cmake -B build -S .
-          cmake --build build -- -j2
+          docker build -f backend/Dockerfile -t condo_backend_dev --target build .
 
-      - name: Smoke test backend
-        run: echo "Add unit tests and integration tests later"
-
-      - name: Build Docker image
-        run: docker build -t cpp-prod -f backend/Dockerfile backend
-
-      - name: Build and test
+      # 4 - Run Google Tests
+      - name: Run Google Tests
         run: |
-          cmake -B build -S backend -DCMAKE_BUILD_TYPE=Release
-          cmake --build build --parallel
-          ctest --test-dir build --output-on-failure
+          docker run --rm condo_backend_dev ctest --output-on-failure
+
+      # 5 - Build the production image (clean runtime)
+      - name: Build production image
+        run: |
+          docker build -f backend/Dockerfile -t condo_backend_prod --target runtime .
+
+      # # 6 - (Optional) Save the image as an artifact for download/debug
+      # - name: Save production image artifact
+      #   uses: ishworkh/docker-image-artifact-upload@v1
+      #   with:
+      #     image: condo_backend_prod
+
+
 
