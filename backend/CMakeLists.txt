@@ -42,6 +42,7 @@ target_link_libraries(condo_backend PRIVATE
 
 # Enable testing
 enable_testing()
+add_subdirectory(tests)
 
 # Download and configure GoogleTest via FetchContent (modern way)
 include(FetchContent)
