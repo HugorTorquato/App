@@ -1,3 +1,6 @@
 [submodule "backend/vendor/crow"]
 	path = backend/vendor/crow
 	url = https://github.com/CrowCpp/Crow.git
+[submodule "vendor/crow"]
+	path = vendor/crow
+	url = https://github.com/CrowCpp/crow.git
