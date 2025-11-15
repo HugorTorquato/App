@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true  
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -46,6 +50,7 @@ jobs:
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          progress: plain
 
       # -----------------------------
       # Run Google Tests
@@ -53,7 +58,10 @@ jobs:
       # -----------------------------
       - name: Run Google Tests
         run: |
-          docker run --rm -w /app/backend/build condo_backend_dev ctest --output-on-failure
+          docker run --rm \
+            -w /app/backend/build \
+            condo_backend_dev \
+            ctest --output-on-failure
 
       # -----------------------------
       # Build production image
@@ -75,6 +83,7 @@ jobs:
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          progress: plain
 
       # -----------------------------
       # (Optional) Upload build artifacts
