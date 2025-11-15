@@ -59,12 +59,22 @@ jobs:
       # Build production image
       # Smaller, minimal runtime layer only
       # -----------------------------
+      # - name: Build production image
+      #   run: |
+      #     docker build \
+      #       -f backend/Dockerfile \
+      #       --target runtime \
+      #       -t condo_backend_prod .
       - name: Build production image
-        run: |
-          docker build \
-            -f backend/Dockerfile \
-            --target runtime \
-            -t condo_backend_prod .
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          target: runtime
+          tags: condo_backend_prod
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       # -----------------------------
       # (Optional) Upload build artifacts
