@@ -29,12 +29,23 @@ jobs:
       # Build development image
       # Includes compilers, cmake, g++, GTest, Crow, etc.
       # -----------------------------
+      # - name: Build backend (dev stage)
+      #   run: |
+      #     docker build \
+      #       -f backend/Dockerfile \
+      #       --target build \
+      #       -t condo_backend_dev .
+
       - name: Build backend (dev stage)
-        run: |
-          docker build \
-            -f backend/Dockerfile \
-            --target build \
-            -t condo_backend_dev .
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          target: build
+          tags: condo_backend_dev
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       # -----------------------------
       # Run Google Tests
