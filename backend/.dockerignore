@@ -1,6 +1,14 @@
-build/
+.git
+.github
+build
+cmake-build*
 *.o
 *.obj
-*.exe
-*.log
+*.a
+*.so
+*.cache
 *.tmp
+*.log
+.vscode
+.idea
+node_modules

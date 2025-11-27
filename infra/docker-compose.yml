@@ -6,7 +6,7 @@ services:
       context: ..
       dockerfile: backend/Dockerfile.dev
     volumes:
-      - .:/app                # Mount your local code
+      - ../.:/app                # Mount your local code
     command: tail -f /dev/null # Keep container alive
     container_name: app_dev
     tty: true
