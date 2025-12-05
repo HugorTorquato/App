@@ -1,5 +1,6 @@
 // minimal Crow example (assumes crow headers in vendor/crow/include)
 #include "../../vendor/crow/include/crow.h" // or #include "crow.h" depending on header you used
+#include "Utils/Logger.h"
 
 int main()
 {
@@ -9,6 +10,7 @@ int main()
         return "Hello from Crow backend!";
     });
 
+    Logger::info("Starting Crow server on port 8080");
     app.port(8080).multithreaded().run();
     return 0;
 }
