@@ -5,6 +5,7 @@ add_executable(runTests
     Utils/test_logger.cpp
     Utils/test_ApiError.cpp
     DTOs/test_building_dto.cpp
+    DTOs/test_resident_dto.cpp
 )
 
 target_link_libraries(runTests PRIVATE gtest_main)
