@@ -34,6 +34,8 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libpqxx-dev \
     libasio-dev \
+    nlohmann-json3-dev \
+    clang-format \
     && rm -rf /var/lib/apt/lists/*
 
 # Set workdir
