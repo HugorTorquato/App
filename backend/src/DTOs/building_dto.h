@@ -1,17 +1,17 @@
 #pragma once
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
-#include <nlohmann/json.hpp>
 
 class ApartmentDTO {
-public:
+   public:
     int id;
     std::string number;
     double area_m2;
 };
 
 class BuildingDTO {
-public:
+   public:
     int id;
     std::string name;
     std::string address;
@@ -21,11 +21,7 @@ public:
 
 // JSON serialization for ApartmentDTO
 inline void to_json(nlohmann::json& j, const ApartmentDTO& a) {
-    j = nlohmann::json{
-        {"id", a.id},
-        {"number", a.number},
-        {"area_m2", a.area_m2}
-    };
+    j = nlohmann::json{{"id", a.id}, {"number", a.number}, {"area_m2", a.area_m2}};
 }
 
 inline void from_json(const nlohmann::json& j, ApartmentDTO& a) {
@@ -36,13 +32,11 @@ inline void from_json(const nlohmann::json& j, ApartmentDTO& a) {
 
 // JSON serialization for BuildingDTO
 inline void to_json(nlohmann::json& j, const BuildingDTO& b) {
-    j = nlohmann::json{
-        {"id", b.id},
-        {"name", b.name},
-        {"address", b.address},
-        {"total_floors", b.total_floors},
-        {"apartments", b.apartments}
-    };
+    j = nlohmann::json{{"id", b.id},
+                       {"name", b.name},
+                       {"address", b.address},
+                       {"total_floors", b.total_floors},
+                       {"apartments", b.apartments}};
 }
 
 inline void from_json(const nlohmann::json& j, BuildingDTO& b) {

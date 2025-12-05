@@ -2,6 +2,9 @@
 set -e
 cd ..
 
+echo "🔧 Formatting source code..."
+find . -regex '.*\.\(cpp\|h\|hpp\)' -exec clang-format -i {} +
+
 # === CONFIG ===
 BUILD_DIR="build"
 EXECUTABLE_NAME="bin/condo_backend"
@@ -28,4 +31,4 @@ ctest --output-on-failure
 
 # Run
 echo "🚀 Starting Crow API..."
-# ./$EXECUTABLE_NAME
+./$EXECUTABLE_NAME

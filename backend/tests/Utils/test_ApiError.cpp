@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include "../../src/Utils/ApiError.h"
 
 TEST(ApiErrorTest, ApiErrorThrowsRuntimeError) {

@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include "../../src/Utils/Logger.h"
 
 TEST(LoggerTest, InfoLogsMessage) {

@@ -1,5 +1,3 @@
 #include <gtest/gtest.h>
 
-TEST(SampleTest, HelloWorld) {
-    EXPECT_EQ(1 + 1, 2);
-}
+TEST(SampleTest, HelloWorld) { EXPECT_EQ(1 + 1, 2); }
