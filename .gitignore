@@ -44,3 +44,4 @@
 CMakeFiles/
 backend/build/
 backend/.cache/
+build/
