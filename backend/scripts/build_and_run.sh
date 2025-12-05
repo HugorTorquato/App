@@ -1,9 +1,10 @@
 #!/bin/bash
 set -e
+cd ..
 
 # === CONFIG ===
 BUILD_DIR="build"
-EXECUTABLE_NAME="condo_backend"
+EXECUTABLE_NAME="bin/condo_backend"
 SRC_DIR="/app"
 INCLUDE_DIR="$CROW_INCLUDE_DIR"
 
@@ -23,6 +24,8 @@ cmake -DCMAKE_BUILD_TYPE=Debug \
 # Compile
 make -j$(nproc)
 
+ctest --output-on-failure
+
 # Run
 echo "🚀 Starting Crow API..."
-./$EXECUTABLE_NAME
+# ./$EXECUTABLE_NAME

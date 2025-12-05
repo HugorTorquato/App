@@ -1,5 +1,5 @@
 // minimal Crow example (assumes crow headers in vendor/crow/include)
-#include "crow.h" // or #include "crow.h" depending on header you used
+#include "../../vendor/crow/include/crow.h" // or #include "crow.h" depending on header you used
 
 int main()
 {
