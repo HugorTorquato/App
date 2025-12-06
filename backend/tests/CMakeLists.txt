@@ -7,6 +7,7 @@ add_executable(runTests
     DTOs/test_building_dto.cpp
     DTOs/test_resident_dto.cpp
     DTOs/requests/test_create_building_request.cpp
+    DTOs/responses/test_building_response.cpp
 )
 
 target_link_libraries(runTests PRIVATE gtest_main)
