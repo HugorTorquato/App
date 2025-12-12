@@ -15,6 +15,10 @@ class Building {
     time_t getCreatedAt() const;
     time_t getUpdatedAt() const;
 
+    void updateBuildInfos(const int* Id, const std::string* Name, const std::string* Address,
+                          const int* NumberOfFloors);
+
+   private:
     void updateUpdatedAt();  // Every modification into this object should call this method
 
    private:

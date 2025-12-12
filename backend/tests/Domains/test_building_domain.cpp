@@ -34,11 +34,42 @@ TEST_F(BuildingDomainTests, BuildDomainConstructorAndValidateGetters) {
     EXPECT_EQ(defaultBuild->getCreatedAt(), defaultBuild->getUpdatedAt());
 }
 
-TEST_F(BuildingDomainTests, BuildDomainUpdateUpdatedAt) {
+TEST_F(BuildingDomainTests, UpdateBuildDomain) {
     // Sleep for 1 second to ensure a time difference
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
-    defaultBuild->updateUpdatedAt();
+    const int newId = 2;
+    const std::string newName = "build2";
+    const std::string newAddress = "adress2";
+    const int newNumberOfFloors = 10;
+
+    defaultBuild->updateBuildInfos(&newId, &newName, &newAddress, &newNumberOfFloors);
+
+    EXPECT_EQ(defaultBuild->getId(), newId);
+    EXPECT_EQ(defaultBuild->getName(), newName);
+    EXPECT_EQ(defaultBuild->getAddress(), newAddress);
+    EXPECT_EQ(defaultBuild->getNumberOfFloors(), newNumberOfFloors);
 
     EXPECT_NE(defaultBuild->getCreatedAt(), defaultBuild->getUpdatedAt());
+}
+
+TEST_F(BuildingDomainTests, UpdateBuildDomainWithOptionalValuesUpdateBuildName) {
+    const std::string newName = "build2";
+
+    defaultBuild->updateBuildInfos(nullptr, &newName, nullptr, nullptr);
+
+    EXPECT_EQ(defaultBuild->getId(), defaultId);
+    EXPECT_EQ(defaultBuild->getName(), newName);
+    EXPECT_EQ(defaultBuild->getAddress(), defaultAddress);
+    EXPECT_EQ(defaultBuild->getNumberOfFloors(), defaultNumberOfFloors);
+}
+
+TEST_F(BuildingDomainTests, UpdateBuildDomainWithOptionalValuesUpdateBuildAddress) {
+    const std::string newAddress = "address2";
+    defaultBuild->updateBuildInfos(nullptr, nullptr, &newAddress, nullptr);
+
+    EXPECT_EQ(defaultBuild->getId(), defaultId);
+    EXPECT_EQ(defaultBuild->getName(), defaultName);
+    EXPECT_EQ(defaultBuild->getAddress(), newAddress);
+    EXPECT_EQ(defaultBuild->getNumberOfFloors(), defaultNumberOfFloors);
 }
