@@ -1,6 +1,8 @@
-# backend/tests/CMakeLists.txt
-
-add_executable(runTests 
+# ======================
+#  TESTS EXECUTABLE
+# ======================
+# Define the executable that will run all your unit tests
+add_executable(runTests
     test_hello.cpp
     Utils/test_logger.cpp
     Utils/test_ApiError.cpp
@@ -10,7 +12,20 @@ add_executable(runTests
     DTOs/responses/test_building_response.cpp
 )
 
-target_link_libraries(runTests PRIVATE gtest_main)
+# ======================
+#  LINK TESTS WITH GOOGLE TEST AND APP CORE
+# ======================
+# Link to GoogleTest (which is already fetched via FetchContent)
+# Link the 'app_core' library to allow unit tests to access your domain logic
+target_link_libraries(runTests PRIVATE
+    gtest_main  # GoogleTest main library
+    app_core    # Your core logic library
+)
 
+# ======================
+#  GOOGLE TEST AUTOMATIC TEST DISCOVERY
+# ======================
+# Automatically discovers and registers all the tests in 'runTests'
 include(GoogleTest)
 gtest_discover_tests(runTests)
+
