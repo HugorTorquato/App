@@ -62,14 +62,14 @@ FetchContent_MakeAvailable(googletest)
 # ======================
 #  PROJECT STRUCTURE
 # ======================
-add_subdirectory(src)      # Builds the app_core static library
+add_subdirectory(src)      # Builds the domain static library
 add_subdirectory(tests)    # Builds unit tests
 
 
 # ======================
 #  MAIN EXECUTABLE
 # ======================
-add_executable(condo_backend src/main.cpp)
+add_executable(condo_backend src/Server/main.cpp)
 
 # Compile warnings
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -93,7 +93,7 @@ target_include_directories(condo_backend PRIVATE
 #  LINKING
 # ======================
 target_link_libraries(condo_backend PRIVATE
-    app_core              # Your domain library
+    domain              # Your domain library
 
     # Boost
     Boost::system

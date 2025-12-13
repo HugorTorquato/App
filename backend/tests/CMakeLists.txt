@@ -20,10 +20,10 @@ add_executable(runTests
 #  LINK TESTS WITH GOOGLE TEST AND APP CORE
 # ======================
 # Link to GoogleTest (which is already fetched via FetchContent)
-# Link the 'app_core' library to allow unit tests to access your domain logic
+# Link the 'domain' library to allow unit tests to access your domain logic
 target_link_libraries(runTests PRIVATE
     gtest_main  # GoogleTest main library
-    app_core    # Your core logic library
+    domain    # Your core logic library
 )
 
 # ======================
