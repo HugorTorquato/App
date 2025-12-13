@@ -7,6 +7,7 @@
 # List all source files in the 'Domains' directory
 set(DOMAIN_SOURCES
     building.cpp
+    apartment.cpp
     # Add other domain source files here (e.g., apartment.cpp, resident.cpp, etc.)
 )
 

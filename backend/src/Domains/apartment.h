@@ -1,0 +1,40 @@
+#pragma once
+
+#include <ctime>
+#include <optional>
+#include <string>
+
+class Apartment {
+   public:
+    Apartment() = delete;
+    Apartment(const int Id, const int BuildingId, const std::string& Number, bool IsOccupied, bool PetAllowed,
+              const double CondoFee);
+
+    void updateApartmentInfos(std::optional<int> Id = std::nullopt, std::optional<int> BuildingId = std::nullopt,
+                              std::optional<std::string> Number = std::nullopt,
+                              std::optional<bool> IsOccupied = std::nullopt,
+                              std::optional<bool> PetAllowed = std::nullopt,
+                              std::optional<double> CondoFee = std::nullopt);
+
+    int getId() const;
+    int getBuildingId() const;
+    const std::string& getNumber() const;
+    bool getIsOccupied() const;
+    bool getPetAllowed() const;
+    double getCondoFee() const;
+    time_t getCreatedAt() const;
+    time_t getUpdatedAt() const;
+
+   private:
+    void updateUpdatedAt();  // Every modification into this object should call this method
+
+   private:
+    int id;
+    int buildingId;
+    std::string number;  // e.g. "201", "13B"
+    bool isOccupied;
+    bool petAllowed;
+    double condoFee;
+    time_t createdAt;
+    time_t updatedAt;
+};

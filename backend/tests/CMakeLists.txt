@@ -11,6 +11,7 @@ add_executable(runTests
     DTOs/requests/test_create_building_request.cpp
     DTOs/responses/test_building_response.cpp
     Domains/test_building_domain.cpp
+    Domains/test_apartment_domain.cpp
 )
 
 # ======================
