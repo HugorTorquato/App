@@ -10,6 +10,7 @@ class Apartment {
     Apartment(const int Id, const int BuildingId, const std::string& Number, bool IsOccupied, bool PetAllowed,
               const double CondoFee);
 
+    // If a pointer is not null, update the member. Otherwise, keep the member's current value.
     void updateApartmentInfos(std::optional<int> Id = std::nullopt, std::optional<int> BuildingId = std::nullopt,
                               std::optional<std::string> Number = std::nullopt,
                               std::optional<bool> IsOccupied = std::nullopt,

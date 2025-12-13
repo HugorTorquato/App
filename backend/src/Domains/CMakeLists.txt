@@ -8,6 +8,7 @@
 set(DOMAIN_SOURCES
     building.cpp
     apartment.cpp
+    resident.cpp
     # Add other domain source files here (e.g., apartment.cpp, resident.cpp, etc.)
 )
 
