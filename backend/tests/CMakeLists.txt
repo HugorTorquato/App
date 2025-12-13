@@ -13,6 +13,7 @@ add_executable(runTests
     Domains/test_building_domain.cpp
     Domains/test_apartment_domain.cpp
     Domains/test_resident_domain.cpp
+    Domains/test_maintenanceRequest_domain.cpp
 )
 
 # ======================
