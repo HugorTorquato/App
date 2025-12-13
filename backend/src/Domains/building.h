@@ -10,8 +10,8 @@ class Building {
     Building(const int Id, const std::string& Name, const std::string& Address, const int NumberOfFloors);
 
     int getId() const;
-    std::string getName() const;
-    std::string getAddress() const;
+    const std::string& getName() const;
+    const std::string& getAddress() const;
     int getNumberOfFloors() const;
     time_t getCreatedAt() const;
     time_t getUpdatedAt() const;
