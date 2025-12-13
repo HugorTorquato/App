@@ -9,14 +9,13 @@ Building::Building(const int Id, const std::string& Name, const std::string& Add
     updatedAt = createdAt;
 }
 
-void Building::updateBuildInfos(const int* Id, const std::string* Name, const std::string* Address,
-                                const int* NumberOfFloors) {
+void Building::updateBuildInfos(std::optional<int> Id, std::optional<std::string> Name,
+                                std::optional<std::string> Address, std::optional<int> NumberOfFloors) {
     // If a pointer is not null, update the member. Otherwise, keep the member's current value.
-    this->id = Id ? *Id : this->id;
-    this->name = Name ? *Name : this->name;
-    this->address = Address ? *Address : this->address;
-    this->numberOfFloors = NumberOfFloors ? *NumberOfFloors : this->numberOfFloors;
-
+    if (Id) this->id = *Id;
+    if (Name) this->name = *Name;
+    if (Address) this->address = *Address;
+    if (NumberOfFloors) this->numberOfFloors = *NumberOfFloors;
     this->updateUpdatedAt();
 }
 

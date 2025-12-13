@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <ctime>
 #include <memory>
-#include <string>
 
 #include "../../src/Domains/building.h"
 
@@ -43,7 +41,7 @@ TEST_F(BuildingDomainTests, UpdateBuildDomain) {
     const std::string newAddress = "adress2";
     const int newNumberOfFloors = 10;
 
-    defaultBuild->updateBuildInfos(&newId, &newName, &newAddress, &newNumberOfFloors);
+    defaultBuild->updateBuildInfos(newId, newName, newAddress, newNumberOfFloors);
 
     EXPECT_EQ(defaultBuild->getId(), newId);
     EXPECT_EQ(defaultBuild->getName(), newName);
@@ -56,7 +54,7 @@ TEST_F(BuildingDomainTests, UpdateBuildDomain) {
 TEST_F(BuildingDomainTests, UpdateBuildDomainWithOptionalValuesUpdateBuildName) {
     const std::string newName = "build2";
 
-    defaultBuild->updateBuildInfos(nullptr, &newName, nullptr, nullptr);
+    defaultBuild->updateBuildInfos(std::nullopt, newName, std::nullopt, std::nullopt);
 
     EXPECT_EQ(defaultBuild->getId(), defaultId);
     EXPECT_EQ(defaultBuild->getName(), newName);
@@ -66,7 +64,7 @@ TEST_F(BuildingDomainTests, UpdateBuildDomainWithOptionalValuesUpdateBuildName) 
 
 TEST_F(BuildingDomainTests, UpdateBuildDomainWithOptionalValuesUpdateBuildAddress) {
     const std::string newAddress = "address2";
-    defaultBuild->updateBuildInfos(nullptr, nullptr, &newAddress, nullptr);
+    defaultBuild->updateBuildInfos(std::nullopt, std::nullopt, newAddress, std::nullopt);
 
     EXPECT_EQ(defaultBuild->getId(), defaultId);
     EXPECT_EQ(defaultBuild->getName(), defaultName);
