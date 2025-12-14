@@ -2,9 +2,10 @@
 
 int InMemoryResidentRepository::save(const Resident& resident) {
     int id = nextId++;
-    // Resident copy = resident;
-    // copy.setId(id);
-    // storage[id] = copy;
+    Resident copy = resident;
+    copy.updateResidentInfos(id, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt,
+                             std::nullopt);
+    storage.emplace(id, std::move(copy));
     return id;
 }
 
