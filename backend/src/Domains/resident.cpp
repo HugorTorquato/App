@@ -1,7 +1,22 @@
 #include "resident.h"
 
-Resident::Resident(const int Id, const std::string& FullName, const std::string& DocumentNumber, const int ApartmentId,
+Resident::Resident(const std::string& FullName, const std::string& DocumentNumber, const std::string& ApartmentId,
                    const bool IsOwner, const std::string& Phone, const time_t MoveInDate, const time_t MoveOutDate)
+    : id(0),
+      fullName(FullName),
+      documentNumber(DocumentNumber),
+      apartmentId(ApartmentId),
+      isOwner(IsOwner),
+      phone(Phone),
+      moveInDate(MoveInDate),
+      moveOutDate(MoveOutDate) {
+    createdAt = std::time(nullptr);
+    updatedAt = createdAt;
+}
+
+Resident::Resident(const int Id, const std::string& FullName, const std::string& DocumentNumber,
+                   const std::string& ApartmentId, const bool IsOwner, const std::string& Phone,
+                   const time_t MoveInDate, const time_t MoveOutDate)
     : id(Id),
       fullName(FullName),
       documentNumber(DocumentNumber),
@@ -15,7 +30,7 @@ Resident::Resident(const int Id, const std::string& FullName, const std::string&
 }
 
 void Resident::updateResidentInfos(std::optional<int> Id, std::optional<std::string> FullName,
-                                   std::optional<std::string> DocumentNumber, std::optional<int> ApartmentId,
+                                   std::optional<std::string> DocumentNumber, std::optional<std::string> ApartmentId,
                                    std::optional<bool> IsOwner, std::optional<std::string> Phone,
                                    std::optional<time_t> MoveInDate, std::optional<time_t> MoveOutDate) {
     if (Id) this->id = *Id;
@@ -32,7 +47,7 @@ void Resident::updateResidentInfos(std::optional<int> Id, std::optional<std::str
 int Resident::getId() const { return id; }
 const std::string& Resident::getFullName() const { return fullName; }
 const std::string& Resident::getDocumentNumber() const { return documentNumber; }
-int Resident::getApartmentId() const { return apartmentId; }
+const std::string& Resident::getApartmentId() const { return apartmentId; }
 bool Resident::getIsOwner() const { return isOwner; }
 const std::string& Resident::getPhone() const { return phone; }
 time_t Resident::getMoveInDate() const { return moveInDate; }

@@ -9,7 +9,7 @@ class ResidentDomainTests : public ::testing::Test {
     const int defaultId = 1;
     const std::string defaultFullName = "John Doe";
     const std::string defaultDocumentNumber = "123456789";
-    const int defaultApartmentId = 101;
+    const std::string defaultApartmentId = "101";
     const bool defaultIsOwner = true;
     const std::string defaultPhone = "555-1234";
     const time_t defaultMoveInDate = 1622505600;  // June 1, 2021
@@ -37,11 +37,30 @@ TEST_F(ResidentDomainTests, ResidentDomainConstructorAndValidateGetters) {
     EXPECT_EQ(defaultResident->getCreatedAt(), defaultResident->getUpdatedAt());
 }
 
+TEST_F(ResidentDomainTests, UseResidentConstructorWithoutID) {
+    std::unique_ptr<Resident> residentWithoutID;
+
+    constexpr int noID = 0;
+
+    residentWithoutID = std::make_unique<Resident>(defaultFullName, defaultDocumentNumber, defaultApartmentId,
+                                                   defaultIsOwner, defaultPhone, defaultMoveInDate, defaultMoveOutDate);
+
+    EXPECT_EQ(residentWithoutID->getId(), noID);
+    EXPECT_EQ(residentWithoutID->getFullName(), defaultFullName);
+    EXPECT_EQ(residentWithoutID->getDocumentNumber(), defaultDocumentNumber);
+    EXPECT_EQ(residentWithoutID->getApartmentId(), defaultApartmentId);
+    EXPECT_EQ(residentWithoutID->getIsOwner(), defaultIsOwner);
+    EXPECT_EQ(residentWithoutID->getPhone(), defaultPhone);
+    EXPECT_EQ(residentWithoutID->getMoveInDate(), defaultMoveInDate);
+    EXPECT_EQ(residentWithoutID->getMoveOutDate(), defaultMoveOutDate);
+    EXPECT_EQ(residentWithoutID->getCreatedAt(), residentWithoutID->getUpdatedAt());
+}
+
 TEST_F(ResidentDomainTests, UpdateResidentDomain) {
     const int newId = 2;
     const std::string newFullName = "Jane Smith";
     const std::string newDocumentNumber = "987654321";
-    const int newApartmentId = 202;
+    const std::string& newApartmentId = "202";
     const bool newIsOwner = false;
     const std::string newPhone = "555-5678";
     const time_t newMoveInDate = 1625097600;   // July 1, 2021
