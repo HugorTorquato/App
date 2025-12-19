@@ -62,7 +62,48 @@ TEST_F(InMemoryResidentRepositoryTest, AddMultipleResidentsToTheStorage) {
     const auto& expecteNames = std::vector<std::string>{"Hugo Torquato", "Jane Smith", "Alice Johnson"};
 
     for (const auto& resident : residents) {
-        std::cout << "Resident Name: " << resident.getFullName() << std::endl;
-        EXPECT_EQ(resident.getFullName(), expecteNames[resident.getId() - 1]);
+        // std::cout << "Resident Name: " << resident.getFullName() << std::endl;
+        EXPECT_EQ(resident.getFullName(), expecteNames[resident.getId()]);
     }
+}
+
+TEST_F(InMemoryResidentRepositoryTest, UpdateRecordInMemoryContainer) {
+    auto res1Id = repository.save(resident1);
+
+    auto originalResident = repository.findAll();
+    ASSERT_FALSE(originalResident.empty());
+
+    auto res1 = originalResident.at(res1Id);
+    EXPECT_EQ(res1.getFullName(), "Hugo Torquato");
+
+    res1.updateResidentInfos(res1Id, "Hugo Rodrigues Torquato", std::nullopt, std::nullopt, std::nullopt, std::nullopt,
+                             std::nullopt, std::nullopt);
+
+    repository.update(res1);
+
+    auto updatedResidents = repository.findAll().at(res1Id);
+
+    EXPECT_EQ(updatedResidents.getFullName(), "Hugo Rodrigues Torquato");
+}
+
+TEST_F(InMemoryResidentRepositoryTest, UpdateRecordInMemoryContainerWithInvalidID) {
+    auto res1Id = repository.save(resident1);
+
+    auto originalResident = repository.findAll();
+    ASSERT_FALSE(originalResident.empty());
+
+    auto res1 = originalResident.at(res1Id);
+    EXPECT_EQ(res1.getFullName(), "Hugo Torquato");
+
+    // Update with invalid ID
+    constexpr int invalidId = 9999;
+    res1.updateResidentInfos(invalidId, "Hugo Rodrigues Torquato", std::nullopt, std::nullopt, std::nullopt,
+                             std::nullopt, std::nullopt, std::nullopt);
+
+    repository.update(res1);
+
+    auto updatedResidents = repository.findAll().at(res1Id);
+
+    // Name should remain unchanged
+    EXPECT_EQ(updatedResidents.getFullName(), "Hugo Torquato");
 }

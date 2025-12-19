@@ -1,5 +1,7 @@
 #include "InMemoryResidentRepository.h"
 
+#include "../../Utils/Logger.h"
+
 int InMemoryResidentRepository::save(const Resident& resident) {
     int id = nextId++;
     Resident copy = resident;
@@ -19,16 +21,28 @@ int InMemoryResidentRepository::save(const Resident& resident) {
 // }
 
 std::vector<Resident> InMemoryResidentRepository::findAll() {
+    Logger::info("[InMemoryResidentRepository::findAll] Finding all residents...");
     std::vector<Resident> result;
     for (const auto& [_, resident] : storage) {
+        Logger::info("[InMemoryResidentRepository::findAll] Found resident with ID: " +
+                     std::to_string(resident.getId()) + " and Name: " + resident.getFullName());
         result.push_back(resident);
     }
+    Logger::info("[InMemoryResidentRepository::findAll] Found " + std::to_string(result.size()) + " residents.");
     return result;
 }
 
-// void InMemoryResidentRepository::update(const Resident& resident) {
-//     storage[resident.getId()] = resident;
-// }
+void InMemoryResidentRepository::update(const Resident& resident) {
+    const auto id = resident.getId();
+    auto it = storage.find(id);
+
+    if (it == storage.end()) {
+        Logger::info("[InMemoryResidentRepository::update] Resident with ID " + std::to_string(id) + " not found.");
+        return;
+    }
+
+    it->second = resident;
+}
 
 // void InMemoryResidentRepository::remove(int id) {
 //     storage.erase(id);
