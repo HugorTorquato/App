@@ -14,5 +14,5 @@ class InMemoryResidentRepository : public IResidentRepository {
     std::optional<Resident> findById(int id) override;
     std::vector<Resident> findAll() override;
     void update(const Resident& resident) override;
-    // void remove(int id) override;
+    void remove(int id) override;
 };

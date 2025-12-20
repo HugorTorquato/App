@@ -35,15 +35,18 @@ std::vector<Resident> InMemoryResidentRepository::findAll() {
 void InMemoryResidentRepository::update(const Resident& resident) {
     const auto id = resident.getId();
     auto it = storage.find(id);
-
     if (it == storage.end()) {
         Logger::info("[InMemoryResidentRepository::update] Resident with ID " + std::to_string(id) + " not found.");
         return;
     }
-
     it->second = resident;
 }
 
-// void InMemoryResidentRepository::remove(int id) {
-//     storage.erase(id);
-// }
+void InMemoryResidentRepository::remove(int id) {
+    auto it = storage.find(id);
+    if (it == storage.end()) {
+        Logger::info("[InMemoryResidentRepository::remove] Resident with ID " + std::to_string(id) + " not found.");
+        return;
+    }
+    storage.erase(id);
+}

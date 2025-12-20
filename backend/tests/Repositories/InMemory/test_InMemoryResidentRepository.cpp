@@ -4,27 +4,6 @@
 
 #include "../../../src/Repositories/inmemory/InMemoryResidentRepository.h"
 
-// ✅ The correct mental model for repository tests
-
-// ❌ Wrong model
-
-// “Repository is global / singleton / static”
-
-// ✅ Correct model
-
-// “Each test owns its own repository instance”
-
-// Why?
-
-// Tests must be isolated
-
-// No shared state
-
-// Deterministic behavior
-
-// Your in-memory repository is NOT a global object.
-// It is just a normal class with state.
-
 class InMemoryResidentRepositoryTest : public ::testing::Test {
    protected:
     InMemoryResidentRepository repository;
@@ -180,4 +159,31 @@ TEST_F(InMemoryResidentRepositoryTest, SaveStoresResidentsCorrectly) {
 
     EXPECT_EQ(foundResident1.getFullName(), resident1.getFullName());
     EXPECT_EQ(foundResident2.getFullName(), resident2.getFullName());
+}
+
+TEST_F(InMemoryResidentRepositoryTest, RemoveDeletesResidentById) {
+    auto id1 = repository.save(resident1);
+    auto id2 = repository.save(resident2);
+
+    repository.remove(id1);
+
+    auto foundResident1Opt = repository.findById(id1);
+    auto foundResident2Opt = repository.findById(id2);
+
+    EXPECT_FALSE(foundResident1Opt.has_value());
+    EXPECT_TRUE(foundResident2Opt.has_value());
+}
+
+TEST_F(InMemoryResidentRepositoryTest, RemoveNonExistentIdDoesNothing) {
+    auto id1 = repository.save(resident1);
+    auto id2 = repository.save(resident2);
+
+    constexpr int nonExistentId = 9999;
+    repository.remove(nonExistentId);
+
+    auto foundResident1Opt = repository.findById(id1);
+    auto foundResident2Opt = repository.findById(id2);
+
+    EXPECT_TRUE(foundResident1Opt.has_value());
+    EXPECT_TRUE(foundResident2Opt.has_value());
 }
