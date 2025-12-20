@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <iostream>
+
 #include "../../../src/Repositories/inmemory/InMemoryResidentRepository.h"
 
 // ✅ The correct mental model for repository tests
@@ -106,4 +108,76 @@ TEST_F(InMemoryResidentRepositoryTest, UpdateRecordInMemoryContainerWithInvalidI
 
     // Name should remain unchanged
     EXPECT_EQ(updatedResidents.getFullName(), "Hugo Torquato");
+}
+
+TEST_F(InMemoryResidentRepositoryTest, FindAllReturnsEmptyVectorWhenNoRecords) {
+    auto residents = repository.findAll();
+    EXPECT_TRUE(residents.empty());
+}
+
+TEST_F(InMemoryResidentRepositoryTest, FindAllReturnsSpecificResidentById) {
+    repository.save(resident1);
+    repository.save(resident2);
+    repository.save(resident3);
+
+    auto residents = repository.findAll();
+    ASSERT_EQ(residents.size(), 3);
+
+    for (auto& resident : residents) {
+        auto resId = resident.getId();
+        std::cerr << "Looking for Resident with ID: " << resId << std::endl;
+        auto foundResidentOpt = repository.findById(resId);
+
+        EXPECT_TRUE(foundResidentOpt.has_value());
+        auto foundResident = foundResidentOpt.value();
+        EXPECT_EQ(foundResident.getFullName(), resident.getFullName());
+        EXPECT_EQ(foundResident.getDocumentNumber(), resident.getDocumentNumber());
+        EXPECT_EQ(foundResident.getApartmentId(), resident.getApartmentId());
+        EXPECT_EQ(foundResident.getIsOwner(), resident.getIsOwner());
+        EXPECT_EQ(foundResident.getPhone(), resident.getPhone());
+        EXPECT_EQ(foundResident.getMoveInDate(), resident.getMoveInDate());
+        EXPECT_EQ(foundResident.getMoveOutDate(), resident.getMoveOutDate());
+    }
+}
+
+TEST_F(InMemoryResidentRepositoryTest, FindByIdReturnsNulloptForNonExistentId) {
+    repository.save(resident1);
+    repository.save(resident2);
+
+    constexpr int nonExistentId = 9999;
+    auto foundResidentOpt = repository.findById(nonExistentId);
+
+    EXPECT_FALSE(foundResidentOpt.has_value());
+    EXPECT_FALSE(foundResidentOpt);
+}
+
+TEST_F(InMemoryResidentRepositoryTest, SaveAssignsUniqueIds) {
+    auto id1 = repository.save(resident1);
+    auto id2 = repository.save(resident2);
+    auto id3 = repository.save(resident3);
+
+    EXPECT_NE(id1, id2);
+    EXPECT_NE(id1, id3);
+    EXPECT_NE(id2, id3);
+
+    EXPECT_EQ(id1, 0);
+    EXPECT_EQ(id2, 1);
+    EXPECT_EQ(id3, 2);
+}
+
+TEST_F(InMemoryResidentRepositoryTest, SaveStoresResidentsCorrectly) {
+    auto id1 = repository.save(resident1);
+    auto id2 = repository.save(resident2);
+
+    auto foundResident1Opt = repository.findById(id1);
+    auto foundResident2Opt = repository.findById(id2);
+
+    ASSERT_TRUE(foundResident1Opt.has_value());
+    ASSERT_TRUE(foundResident2Opt.has_value());
+
+    auto foundResident1 = foundResident1Opt.value();
+    auto foundResident2 = foundResident2Opt.value();
+
+    EXPECT_EQ(foundResident1.getFullName(), resident1.getFullName());
+    EXPECT_EQ(foundResident2.getFullName(), resident2.getFullName());
 }

@@ -11,14 +11,14 @@ int InMemoryResidentRepository::save(const Resident& resident) {
     return id;
 }
 
-// std::optional<Resident> InMemoryResidentRepository::findById(int id) {
-//     // auto it = storage.find(id);
-//     // if (it == storage.end()) {
-//     //     return std::nullopt;
-//     // }
-//     // return it->second;
-//     return std::nullopt;
-// }
+std::optional<Resident> InMemoryResidentRepository::findById(int id) {
+    auto it = storage.find(id);
+    if (it == storage.end()) {
+        return std::nullopt;
+    }
+    return it->second;
+    return std::nullopt;
+}
 
 std::vector<Resident> InMemoryResidentRepository::findAll() {
     Logger::info("[InMemoryResidentRepository::findAll] Finding all residents...");
