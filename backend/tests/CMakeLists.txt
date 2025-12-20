@@ -16,6 +16,7 @@ add_executable(runTests
     Domains/test_maintenanceRequest_domain.cpp
     Repositories/InMemory/test_InMemoryResidentRepository.cpp
     Repositories/InMemory/test_InMemoryApartmentRepository.cpp
+    Repositories/InMemory/test_InMemoryBuildingRepository.cpp
 )
 
 # ======================
