@@ -104,7 +104,7 @@ TEST_F(InMemoryResidentRepositoryTest, FindAllReturnsSpecificResidentById) {
 
     for (auto& resident : residents) {
         auto resId = resident.getId();
-        std::cerr << "Looking for Resident with ID: " << resId << std::endl;
+        // std::cerr << "Looking for Resident with ID: " << resId << std::endl;
         auto foundResidentOpt = repository.findById(resId);
 
         EXPECT_TRUE(foundResidentOpt.has_value());

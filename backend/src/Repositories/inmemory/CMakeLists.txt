@@ -5,6 +5,7 @@
 
 target_sources(domain PRIVATE
     InMemoryResidentRepository.cpp
+    InMemoryApartmentRepository.cpp
 )
 
 target_include_directories(domain INTERFACE

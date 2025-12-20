@@ -3,6 +3,7 @@
 #include "../../Utils/Logger.h"
 
 int InMemoryResidentRepository::save(const Resident& resident) {
+    // TODO: If duplicated residents.
     int id = nextId++;
     Resident copy = resident;
     copy.updateResidentInfos(id, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt,
