@@ -9,7 +9,7 @@ add_library(domain STATIC)
 # Add subdirectories for modular structure
 add_subdirectory(Domains)
 add_subdirectory(Repositories)
-# add_subdirectory(Services)
+add_subdirectory(Services)
 # add_subdirectory(Controllers)
 
 # Let users of domain access headers inside src/
