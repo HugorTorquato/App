@@ -21,7 +21,8 @@ add_executable(runTests
     Repositories/InMemory/test_InMemoryApartmentRepository.cpp
     Repositories/InMemory/test_InMemoryBuildingRepository.cpp
     Repositories/InMemory/test_InMemoryMaintenanceRequestRepository.cpp
-    Services/Resident/test_ServiceResident.cpp
+    Services/test_ServiceResident.cpp
+    Services/test_ApartmentResident.cpp
 )
 
 # ======================
