@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "../../../src/DTOs/ResidentDTOMapper.h"
+#include "../../../src/DTOs/Mappers/ResidentDTOMapper.h"
 #include "../../../src/Repositories/inmemory/InMemoryResidentRepository.h"
 #include "../../../src/Services/Resident/ResidentService.h"
 

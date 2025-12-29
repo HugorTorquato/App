@@ -2,7 +2,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "../../src/DTOs/ResidentDTOMapper.h"
+#include "../../src/DTOs/Mappers/ResidentDTOMapper.h"
 
 class ResidentDTOMapperTest : public ::testing::Test {
    protected:

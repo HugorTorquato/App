@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include "../../DTOs/ResidentDTOMapper.h"
+#include "../../DTOs/Mappers/ResidentDTOMapper.h"
 #include "../../Repositories/interfaces/IResidentRepository.h"
 
 class ResidentService {

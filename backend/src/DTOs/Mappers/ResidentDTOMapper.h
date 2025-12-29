@@ -1,6 +1,6 @@
 #pragma once
-#include "../Domains/resident.h"
-#include "resident_dto.h"
+#include "../../Domains/resident.h"
+#include "../resident_dto.h"
 
 class ResidentDTOMapper {
    public:
