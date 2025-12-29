@@ -11,6 +11,7 @@ add_executable(runTests
     DTOs/test_apartment_dto.cpp
     DTOs/Mappers/test_ResidentDTOMapper_dto.cpp
     DTOs/Mappers/test_ApartmentDTOMapper_dto.cpp
+    DTOs/Mappers/test_BuildingDTOMapper_dto.cpp
     DTOs/requests/test_create_building_request.cpp
     DTOs/responses/test_building_response.cpp
     Domains/test_building_domain.cpp
