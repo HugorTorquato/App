@@ -42,3 +42,17 @@ TEST_F(ResidentDTOMapperTest, RoundTrip) {
     EXPECT_EQ(mappedResident.getPhone(), resident.getPhone());
     EXPECT_EQ(mappedResident.getApartmentId(), resident.getApartmentId());
 }
+
+TEST_F(ResidentDTOMapperTest, FromDTOWithInvalidData) {
+    ResidentDTO invalidDto;
+    invalidDto.id = -1;                  // Invalid ID
+    invalidDto.name = "";                // Empty name
+    invalidDto.phone = "invalid-phone";  // Invalid phone format
+    invalidDto.apartment_number = "";    // Empty apartment number
+
+    auto resident = ResidentDTOMapper::fromDTO(invalidDto);
+    EXPECT_EQ(resident.getId(), invalidDto.id);
+    EXPECT_EQ(resident.getFullName(), invalidDto.name);
+    EXPECT_EQ(resident.getPhone(), invalidDto.phone);
+    EXPECT_EQ(resident.getApartmentId(), invalidDto.apartment_number);
+}
