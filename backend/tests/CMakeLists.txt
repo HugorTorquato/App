@@ -9,9 +9,11 @@ add_executable(runTests
     DTOs/test_building_dto.cpp
     DTOs/test_resident_dto.cpp
     DTOs/test_apartment_dto.cpp
+    DTOs/test_maintenanceRequest_dto.cpp
     DTOs/Mappers/test_ResidentDTOMapper_dto.cpp
     DTOs/Mappers/test_ApartmentDTOMapper_dto.cpp
     DTOs/Mappers/test_BuildingDTOMapper_dto.cpp
+    DTOs/Mappers/test_maintenanceRequestDTOMapper.cpp
     DTOs/requests/test_create_building_request.cpp
     DTOs/responses/test_building_response.cpp
     Domains/test_building_domain.cpp
@@ -25,6 +27,7 @@ add_executable(runTests
     Services/test_ServiceResident.cpp
     Services/test_ServiceApartment.cpp
     Services/test_ServiceBuilding.cpp
+    Services/test_ServiceMantananceRequest.cpp
 )
 
 # ======================

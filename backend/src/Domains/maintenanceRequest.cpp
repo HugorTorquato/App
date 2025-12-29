@@ -30,7 +30,7 @@ int MaintenanceRequest::getId() const { return id; }
 int MaintenanceRequest::getResidentId() const { return residentId; }
 int MaintenanceRequest::getApartmentId() const { return apartmentId; }
 const std::string& MaintenanceRequest::getDescription() const { return description; }
-MaintenanceRequest::MaintenanceStatus MaintenanceRequest::getStatus() const { return status; }
+MaintenanceStatus MaintenanceRequest::getStatus() const { return status; }
 int MaintenanceRequest::getPriority() const { return priority; }
 time_t MaintenanceRequest::getCreatedAt() const { return createdAt; }
 time_t MaintenanceRequest::getUpdatedAt() const { return updatedAt; }

@@ -11,9 +11,9 @@ class InMemoryMaintenanceRequestRepositoryTest : public ::testing::Test {
     MaintenanceRequest request3;
 
     InMemoryMaintenanceRequestRepositoryTest()
-        : request1(0, 1, 101, "Leaky faucet", MaintenanceRequest::MaintenanceStatus::Open, 3),
-          request2(0, 2, 202, "Broken heater", MaintenanceRequest::MaintenanceStatus::InProgress, 5),
-          request3(0, 3, 303, "Clogged drain", MaintenanceRequest::MaintenanceStatus::Completed, 2) {}
+        : request1(0, 1, 101, "Leaky faucet", MaintenanceStatus::Open, 3),
+          request2(0, 2, 202, "Broken heater", MaintenanceStatus::InProgress, 5),
+          request3(0, 3, 303, "Clogged drain", MaintenanceStatus::Completed, 2) {}
 
     void SetUp() override {}
 };
@@ -81,8 +81,7 @@ TEST_F(InMemoryMaintenanceRequestRepositoryTest, UpdateDataFromExistingRequest) 
     auto requestToUpdate = result.value();
 
     requestToUpdate.updateMaintenanceRequestInfos(std::nullopt, std::nullopt, std::nullopt,
-                                                  std::string("Updated description"),
-                                                  MaintenanceRequest::MaintenanceStatus::InProgress, 4);
+                                                  std::string("Updated description"), MaintenanceStatus::InProgress, 4);
     repository.update(requestToUpdate);
 
     auto updatedResult = repository.findById(id);
@@ -90,7 +89,7 @@ TEST_F(InMemoryMaintenanceRequestRepositoryTest, UpdateDataFromExistingRequest) 
     auto updatedRequest = updatedResult.value();
 
     EXPECT_EQ(updatedRequest.getDescription(), "Updated description");
-    EXPECT_EQ(updatedRequest.getStatus(), MaintenanceRequest::MaintenanceStatus::InProgress);
+    EXPECT_EQ(updatedRequest.getStatus(), MaintenanceStatus::InProgress);
     EXPECT_EQ(updatedRequest.getPriority(), 4);
 }
 
@@ -103,8 +102,7 @@ TEST_F(InMemoryMaintenanceRequestRepositoryTest, UpdateNonExistentRequestDoesNot
     // Update with invalid ID
     constexpr int invalidId = 9999;
     requestToUpdate.updateMaintenanceRequestInfos(invalidId, std::nullopt, std::nullopt,
-                                                  std::string("Updated description"),
-                                                  MaintenanceRequest::MaintenanceStatus::InProgress, 4);
+                                                  std::string("Updated description"), MaintenanceStatus::InProgress, 4);
     repository.update(requestToUpdate);
 
     auto unchangedResult = repository.findById(id);

@@ -4,10 +4,10 @@
 #include <optional>
 #include <string>
 
+#include "../Utils/DomainEnums.h"
+
 class MaintenanceRequest {
    public:
-    enum class MaintenanceStatus { Open, InProgress, Completed };
-
     MaintenanceRequest() = delete;
     MaintenanceRequest(const int Id, const int ResidentId, const int ApartmentId, const std::string& Description,
                        MaintenanceStatus Status, const int Priority);

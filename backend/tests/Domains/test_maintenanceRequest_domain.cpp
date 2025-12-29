@@ -10,7 +10,7 @@ class MaintenanceRequestDomainTests : public ::testing::Test {
     const int defaultResidentId = 1;
     const int defaultApartmentId = 101;
     const std::string defaultDescription = "Leaky faucet in kitchen";
-    const MaintenanceRequest::MaintenanceStatus defaultStatus = MaintenanceRequest::MaintenanceStatus::Open;
+    const MaintenanceStatus defaultStatus = MaintenanceStatus::Open;
     const int defaultPriority = 3;
 
    protected:
@@ -37,7 +37,7 @@ TEST_F(MaintenanceRequestDomainTests, UpdateMaintenanceRequestDomain) {
     const int newResidentId = 2;
     const int newApartmentId = 202;
     const std::string newDescription = "Broken window in living room";
-    const MaintenanceRequest::MaintenanceStatus newStatus = MaintenanceRequest::MaintenanceStatus::InProgress;
+    const MaintenanceStatus newStatus = MaintenanceStatus::InProgress;
     const int newPriority = 5;
 
     defaultMaintenanceRequest->updateMaintenanceRequestInfos(newId, newResidentId, newApartmentId, newDescription,
@@ -53,7 +53,7 @@ TEST_F(MaintenanceRequestDomainTests, UpdateMaintenanceRequestDomain) {
 
 TEST_F(MaintenanceRequestDomainTests, UpdateMaintenanceRequestDomainWithOptionalValuesUpdateDescriptionAndStatus) {
     const std::string newDescription = "Clogged drain in bathroom";
-    const MaintenanceRequest::MaintenanceStatus newStatus = MaintenanceRequest::MaintenanceStatus::Completed;
+    const MaintenanceStatus newStatus = MaintenanceStatus::Completed;
 
     defaultMaintenanceRequest->updateMaintenanceRequestInfos(std::nullopt, std::nullopt, std::nullopt, newDescription,
                                                              newStatus, std::nullopt);

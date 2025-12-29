@@ -2,6 +2,7 @@
 
 #include <map>
 
+#include "../../Utils/DomainEnums.h"
 #include "../interfaces/IMaintenanceRequestRepository.h"
 
 class InMemoryMaintenanceRequestRepository : public IMaintenanceRequestRepository {
