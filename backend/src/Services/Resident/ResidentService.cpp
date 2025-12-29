@@ -1,6 +1,6 @@
 #include "ResidentService.h"
 
-#include "../../utils/Logger.h"
+#include "../../Utils/Logger.h"
 
 int ResidentService::createResident(const ResidentDTO& resident) {
     Logger::info("Creating Resident: " + resident.name);
