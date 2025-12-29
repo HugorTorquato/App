@@ -66,7 +66,7 @@ TEST_F(ServiceResidentTest, MoveOutResidentUpdatesMoveOutDate) {
     auto id1 = service.createResident(ResidentDTOMapper::toDTO(resident1));
 
     constexpr time_t newMoveOutDate = 1672531199;  // Example timestamp
-    service.moveOutResident(id1, newMoveOutDate);
+    service.updateMoveOutResident(id1, newMoveOutDate);
 
     auto fetchedResidentOpt = service.getResidentById(id1);
     ASSERT_TRUE(fetchedResidentOpt.has_value());
@@ -89,7 +89,7 @@ TEST_F(ServiceResidentTest, MoveOutResidentNonExistentIdDoesNothing) {
 
     constexpr int nonExistentId = 9999;
     constexpr time_t newMoveOutDate = 1672531199;  // Example timestamp
-    service.moveOutResident(nonExistentId, newMoveOutDate);
+    service.updateMoveOutResident(nonExistentId, newMoveOutDate);
 
     // Ensure that the existing resident's move-out date remains unchanged
     auto fetchedResidentOpt = service.getResidentById(id1);

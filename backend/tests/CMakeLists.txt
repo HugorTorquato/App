@@ -8,6 +8,7 @@ add_executable(runTests
     Utils/test_ApiError.cpp
     DTOs/test_building_dto.cpp
     DTOs/test_resident_dto.cpp
+    DTOs/test_apartment_dto.cpp
     DTOs/test_ResidentDTOMapper_dto.cpp
     DTOs/requests/test_create_building_request.cpp
     DTOs/responses/test_building_response.cpp

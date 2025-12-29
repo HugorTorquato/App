@@ -38,4 +38,7 @@ class Apartment {
     double condoFee;
     time_t createdAt;
     time_t updatedAt;
+
+    // TODO: Include more properties
+    //   Area
 };

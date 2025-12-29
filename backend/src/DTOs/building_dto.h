@@ -3,12 +3,7 @@
 #include <string>
 #include <vector>
 
-class ApartmentDTO {
-   public:
-    int id;
-    std::string number;
-    double area_m2;
-};
+#include "apartment_dto.h"
 
 class BuildingDTO {
    public:
@@ -18,17 +13,6 @@ class BuildingDTO {
     int total_floors;
     std::vector<ApartmentDTO> apartments;
 };
-
-// JSON serialization for ApartmentDTO
-inline void to_json(nlohmann::json& j, const ApartmentDTO& a) {
-    j = nlohmann::json{{"id", a.id}, {"number", a.number}, {"area_m2", a.area_m2}};
-}
-
-inline void from_json(const nlohmann::json& j, ApartmentDTO& a) {
-    j.at("id").get_to(a.id);
-    j.at("number").get_to(a.number);
-    j.at("area_m2").get_to(a.area_m2);
-}
 
 // JSON serialization for BuildingDTO
 inline void to_json(nlohmann::json& j, const BuildingDTO& b) {

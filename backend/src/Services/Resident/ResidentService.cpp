@@ -4,7 +4,6 @@
 
 int ResidentService::createResident(const ResidentDTO& resident) {
     Logger::info("Creating Resident: " + resident.name);
-    // return repository.save(resident);
 
     Resident newResident = ResidentDTOMapper::fromDTO(resident);  // convert DTO -> Domain Entity
     int id = repository.save(newResident);                        // persist using repository
@@ -24,7 +23,7 @@ std::optional<ResidentDTO> ResidentService::getResidentById(int residentId) {
     return std::nullopt;
 }
 
-void ResidentService::moveOutResident(int residentId, int moveOutDate) {
+void ResidentService::updateMoveOutResident(int residentId, int moveOutDate) {
     Logger::info("Moving out Resident with ID: " + std::to_string(residentId) +
                  " on date: " + std::to_string(moveOutDate));
     auto residentOpt = repository.findById(residentId);
