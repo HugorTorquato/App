@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Domains/building.h"
+#include "../../Domains/building.h"
 #include "../apartment_dto.h"
 #include "../building_dto.h"
 

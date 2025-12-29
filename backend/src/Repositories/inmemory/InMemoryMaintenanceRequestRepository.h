@@ -2,7 +2,7 @@
 
 #include <map>
 
-#include "../interfaces/IMaintenanceRequest.h"
+#include "../interfaces/IMaintenanceRequestRepository.h"
 
 class InMemoryMaintenanceRequestRepository : public IMaintenanceRequestRepository {
    private:

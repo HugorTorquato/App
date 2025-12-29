@@ -2,7 +2,7 @@
 
 #include <map>
 
-#include "../interfaces/IBuilding.h"
+#include "../interfaces/IBuildingRepository.h"
 
 class InMemoryBuildingRepository : public IBuildingRepository {
    private:
