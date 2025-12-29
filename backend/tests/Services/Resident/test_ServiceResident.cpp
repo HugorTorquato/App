@@ -70,10 +70,17 @@ TEST_F(ServiceResidentTest, MoveOutResidentUpdatesMoveOutDate) {
 
     auto fetchedResidentOpt = service.getResidentById(id1);
     ASSERT_TRUE(fetchedResidentOpt.has_value());
+
+    // From the fetched ResidentDTO, get the Resident and check its move-out date from repository
     auto fetchedResidentDTO = fetchedResidentOpt.value();
     auto fetchedResident = ResidentDTOMapper::fromDTO(fetchedResidentDTO);
-    // EXPECT_EQ(fetchedResident.getMoveOutDate(), newMoveOutDate); // Expeccted to fail because ResidentDTOMapper does
-    // not map MoveOutDate
+    auto fecehdResidentId = fetchedResident.getId();
+    auto residentMoveOutDateFromRepo = repository.findById(fecehdResidentId);
+    if (residentMoveOutDateFromRepo.has_value()) {
+        EXPECT_EQ(residentMoveOutDateFromRepo->getMoveOutDate(), newMoveOutDate);  // Original move-out date
+    } else {
+        FAIL() << "Resident not found in repository";
+    }
 }
 
 TEST_F(ServiceResidentTest, MoveOutResidentNonExistentIdDoesNothing) {
@@ -87,7 +94,37 @@ TEST_F(ServiceResidentTest, MoveOutResidentNonExistentIdDoesNothing) {
     // Ensure that the existing resident's move-out date remains unchanged
     auto fetchedResidentOpt = service.getResidentById(id1);
     ASSERT_TRUE(fetchedResidentOpt.has_value());
+
+    // From the fetched ResidentDTO, get the Resident and check its move-out date from repository
     auto fetchedResidentDTO = fetchedResidentOpt.value();
     auto fetchedResident = ResidentDTOMapper::fromDTO(fetchedResidentDTO);
-    EXPECT_EQ(fetchedResident.getMoveOutDate(), 0);  // Original move-out date
+    auto fecehdResidentId = fetchedResident.getId();
+    auto residentMoveOutDateFromRepo = repository.findById(fecehdResidentId);
+    if (residentMoveOutDateFromRepo.has_value()) {
+        EXPECT_EQ(residentMoveOutDateFromRepo->getMoveOutDate(), 0);  // Original move-out date
+    } else {
+        FAIL() << "Resident not found in repository";
+    }
+}
+
+TEST_F(ServiceResidentTest, CreateMultipleResidentsAndFetchThem) {
+    const int numResidents = 5;
+    for (int i = 0; i < numResidents; ++i) {
+        ResidentDTO dto;
+        dto.id = i;
+        dto.name = "Resident " + std::to_string(i);
+        dto.phone = "555-000" + std::to_string(i);
+        dto.apartment_number = "Apt " + std::to_string(100 + i);
+        service.createResident(dto);
+    }
+
+    for (int i = 0; i < numResidents; ++i) {
+        auto fetchedResidentOpt = service.getResidentById(i);
+        ASSERT_TRUE(fetchedResidentOpt.has_value());
+        auto fetchedResidentDTO = fetchedResidentOpt.value();
+        EXPECT_EQ(fetchedResidentDTO.id, i);
+        EXPECT_EQ(fetchedResidentDTO.name, "Resident " + std::to_string(i));
+        EXPECT_EQ(fetchedResidentDTO.phone, "555-000" + std::to_string(i));
+        EXPECT_EQ(fetchedResidentDTO.apartment_number, "Apt " + std::to_string(100 + i));
+    }
 }
