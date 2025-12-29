@@ -2,7 +2,7 @@
 
 #include "../../../src/DTOs/Mappers/ApartmentDTOMapper.h"
 #include "../../../src/Repositories/inmemory/InMemoryApartmentRepository.h"
-#include "../../../src/Services/Resident/ApartmentService.h"
+#include "../../../src/Services/Apartment/ApartmentService.h"
 
 class ServiceApartmentTest : public ::testing::Test {
    protected:

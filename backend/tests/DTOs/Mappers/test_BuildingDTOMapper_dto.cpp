@@ -2,7 +2,6 @@
 
 #include <nlohmann/json.hpp>
 
-
 #include "../../src/DTOs/Mappers/BuildingDTOMapper.h"
 
 class BuildingDTOMapperTest : public ::testing::Test {
@@ -50,10 +49,10 @@ TEST_F(BuildingDTOMapperTest, RoundTrip) {
 
 TEST_F(BuildingDTOMapperTest, FromDTOWithInvalidData) {
     BuildingDTO invalidDto;
-    invalidDto.id = -1;               // Invalid ID
-    invalidDto.name = "";             // Empty name
-    invalidDto.address = "";          // Empty address
-    invalidDto.total_floors = -10;   // Invalid number of floors
+    invalidDto.id = -1;             // Invalid ID
+    invalidDto.name = "";           // Empty name
+    invalidDto.address = "";        // Empty address
+    invalidDto.total_floors = -10;  // Invalid number of floors
 
     auto building = BuildingDTOMapper::fromDTO(invalidDto);
     EXPECT_EQ(building.getId(), invalidDto.id);

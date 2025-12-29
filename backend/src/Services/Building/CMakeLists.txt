@@ -6,7 +6,7 @@
 
 # List all source files in the 'Domains' directory
 set(DOMAIN_SOURCES
-    ResidentService.cpp
+    BuildingService.cpp
     # Add other domain source files here
 )
 
