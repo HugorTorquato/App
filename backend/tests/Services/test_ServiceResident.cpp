@@ -146,4 +146,3 @@ TEST_F(ServiceResidentTest, CreateResidentReturnsUniqueIds) {
 
     EXPECT_EQ(residentIds.size(), numResidents);
 }
-

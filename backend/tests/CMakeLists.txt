@@ -28,6 +28,10 @@ add_executable(runTests
     Services/test_ServiceApartment.cpp
     Services/test_ServiceBuilding.cpp
     Services/test_ServiceMantananceRequest.cpp
+    Controllers/test_resident_controller.cpp
+    Controllers/test_apartment_controller.cpp
+    Controllers/test_building_controller.cpp
+    Controllers/test_maintenanceRequest_controller.cpp
 )
 
 # ======================
@@ -37,6 +41,7 @@ add_executable(runTests
 # Link the 'domain' library to allow unit tests to access your domain logic
 target_link_libraries(runTests PRIVATE
     gtest_main  # GoogleTest main library
+    gmock_main  # GoogleMock main library
     domain    # Your core logic library
 )
 

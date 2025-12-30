@@ -10,7 +10,7 @@ add_library(domain STATIC)
 add_subdirectory(Domains)
 add_subdirectory(Repositories)
 add_subdirectory(Services)
-# add_subdirectory(Controllers)
+add_subdirectory(Controllers)
 
 # Let users of domain access headers inside src/
 # INTERFACE means: consumers get these include dirs, but this library itself does not compile code there.
