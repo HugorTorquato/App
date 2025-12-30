@@ -9,7 +9,7 @@ def test_create_resident():
         "apartment_number": "303"
     }
 
-    response = requests.post(f"{BASE_URL}/residents/Create", json=payload)
+    response = requests.post(f"{BASE_URL}/Resident/Create", json=payload)
 
     assert response.status_code == 201
 
@@ -34,7 +34,7 @@ def test_get_resident():
         "apartment_number": "101"
     }
 
-    create_res = requests.post(f"{BASE_URL}/residents/Create", json=payload)
+    create_res = requests.post(f"{BASE_URL}/Resident/Create", json=payload)
 
     assert create_res.status_code == 201
 
@@ -45,7 +45,7 @@ def test_get_resident():
     print(f"Created resident with ID: {resident_id}")
 
     # then read
-    res = requests.get(f"{BASE_URL}/residents/GetById/{resident_id}")
+    res = requests.get(f"{BASE_URL}/Resident/GetById/{resident_id}")
 
     assert res.status_code == 200
     data = res.json()
