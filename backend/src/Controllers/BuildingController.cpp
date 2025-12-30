@@ -31,6 +31,7 @@ crow::response BuildingController::create(const crow::request& req) {
 
 crow::response BuildingController::getById(int id) {
     try {
+        Logger::info("Received request to get Building by ID: " + std::to_string(id));
         auto buildingOpt = buildingService.getBuildingById(id);
         if (buildingOpt.has_value()) {
             return crow::response(200, nlohmann::json(buildingOpt.value()).dump());

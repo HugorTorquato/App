@@ -31,6 +31,7 @@ crow::response MaintenanceRequestController::create(const crow::request& req) {
 
 crow::response MaintenanceRequestController::getById(int id) {
     try {
+        Logger::info("Fetching MaintenanceRequest with ID: " + std::to_string(id));
         auto maintenanceRequestOpt = maintenanceRequestService.getMaintenanceRequestById(id);
         if (maintenanceRequestOpt.has_value()) {
             return crow::response(200, nlohmann::json(maintenanceRequestOpt.value()).dump());

@@ -2,6 +2,9 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
+// TODO:
+//  - Make ID key optional
+
 struct ResidentDTO {
     int id;
     std::string name;

@@ -35,6 +35,7 @@ crow::response ResidentController::create(const crow::request& req) {
 
 crow::response ResidentController::getById(int id) {
     try {
+        Logger::info("Received request to get Resident by ID: " + std::to_string(id));
         auto residentOpt = residentService.getResidentById(id);
         if (residentOpt.has_value()) {
             return crow::response(200, nlohmann::json(residentOpt.value()).dump());

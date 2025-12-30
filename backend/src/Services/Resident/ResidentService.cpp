@@ -15,7 +15,9 @@ std::optional<ResidentDTO> ResidentService::getResidentById(int residentId) {
     Logger::info("Fetching Resident with ID: " + std::to_string(residentId));
     auto residentOpt = repository.findById(residentId);
     if (residentOpt.has_value()) {
-        return ResidentDTOMapper::toDTO(residentOpt.value());
+        auto request = ResidentDTOMapper::toDTO(residentOpt.value());
+        Logger::info("Resident found: " + nlohmann::json(request).dump());
+        return request;
     }
     Logger::info("Resident with ID " + std::to_string(residentId) + " not found");
     // TODO: Handle error properly

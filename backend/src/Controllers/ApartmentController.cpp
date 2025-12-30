@@ -31,6 +31,7 @@ crow::response ApartmentController::create(const crow::request& req) {
 
 crow::response ApartmentController::getById(int id) {
     try {
+        Logger::info("Received request to get Apartment by ID: " + std::to_string(id));
         auto apartmentOpt = apartmentService.getApartmentById(id);
         if (apartmentOpt.has_value()) {
             return crow::response(200, nlohmann::json(apartmentOpt.value()).dump());

@@ -4,6 +4,9 @@
 
 #include "../Utils/DomainEnums.h"
 
+// TODO:
+// - Be able to receive string for status and convert to enum
+
 struct MaintenanceRequestDTO {
     int id;
     int resident_id;

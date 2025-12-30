@@ -15,7 +15,9 @@ std::optional<MaintenanceRequestDTO> MaintenanceRequestService::getMaintenanceRe
     Logger::info("Fetching Maintenance Request with ID: " + std::to_string(requestId));
     auto requestOpt = repository.findById(requestId);
     if (requestOpt.has_value()) {
-        return MaintenanceRequestDTOMapper::toDTO(requestOpt.value());
+        auto request = MaintenanceRequestDTOMapper::toDTO(requestOpt.value());
+        Logger::info("Maintenance Request found: " + nlohmann::json(request).dump());
+        return request;
     }
     Logger::info("Maintenance Request with ID " + std::to_string(requestId) + " not found");
     return std::nullopt;

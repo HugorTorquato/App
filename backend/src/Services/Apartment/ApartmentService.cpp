@@ -15,7 +15,9 @@ std::optional<ApartmentDTO> ApartmentService::getApartmentById(int apartmentId) 
     Logger::info("Fetching Apartment with ID: " + std::to_string(apartmentId));
     auto apartmentOpt = repository.findById(apartmentId);
     if (apartmentOpt.has_value()) {
-        return ApartmentDTOMapper::toDTO(apartmentOpt.value());
+        auto request = ApartmentDTOMapper::toDTO(apartmentOpt.value());
+        Logger::info("Apartment found: " + nlohmann::json(request).dump());
+        return request;
     }
     Logger::info("Apartment with ID " + std::to_string(apartmentId) + " not found");
     return std::nullopt;

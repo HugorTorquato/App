@@ -15,7 +15,9 @@ std::optional<BuildingDTO> BuildingService::getBuildingById(int buildingId) {
     Logger::info("Fetching Building with ID: " + std::to_string(buildingId));
     auto buildingOpt = repository.findById(buildingId);
     if (buildingOpt.has_value()) {
-        return BuildingDTOMapper::toDTO(buildingOpt.value());
+        auto request = BuildingDTOMapper::toDTO(buildingOpt.value());
+        Logger::info("Building found: " + nlohmann::json(request).dump());
+        return request;
     }
     Logger::info("Building with ID " + std::to_string(buildingId) + " not found");
     return std::nullopt;

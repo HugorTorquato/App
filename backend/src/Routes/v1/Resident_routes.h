@@ -4,11 +4,11 @@
 #include "../../Controllers/ResidentController.h"
 
 inline void registerResidentRoutes(crow::SimpleApp& app, ResidentController& controller) {
-    CROW_ROUTE(app, "/residents/Create").methods(crow::HTTPMethod::POST)([&controller](const crow::request& req) {
+    CROW_ROUTE(app, "/Resident/Create").methods(crow::HTTPMethod::POST)([&controller](const crow::request& req) {
         return controller.create(req);
     });
 
-    CROW_ROUTE(app, "/residents/GetById/<int>").methods(crow::HTTPMethod::GET)([&controller](int id) {
+    CROW_ROUTE(app, "/Resident/GetById/<int>").methods(crow::HTTPMethod::GET)([&controller](int id) {
         return controller.getById(id);
     });
 

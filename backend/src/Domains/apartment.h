@@ -44,4 +44,5 @@ class Apartment {
 
     // TODO: Include more properties
     // Residents
+    // floor
 };
