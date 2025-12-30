@@ -44,4 +44,4 @@ ctest --output-on-failure
 
 # Run
 echo "🚀 Starting Crow API..."
-# ./$EXECUTABLE_NAME
+./$EXECUTABLE_NAME

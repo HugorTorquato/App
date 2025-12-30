@@ -69,7 +69,7 @@ add_subdirectory(tests)    # Builds unit tests
 # ======================
 #  MAIN EXECUTABLE
 # ======================
-add_executable(condo_backend src/Server/main.cpp)
+add_executable(condo_backend src/main.cpp)
 
 # Compile warnings
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

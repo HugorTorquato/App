@@ -18,7 +18,3 @@ Thin mapping from HTTP to controllers
 ## Pitfall to avoid
 
 Don't parse or validate heavy logic here — keep controllers to do that.
-
-## Getting started
-
-Start with 2 routes: `building` and `residents` to represent both build info and residents of that building.

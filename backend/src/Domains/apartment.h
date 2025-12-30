@@ -43,4 +43,5 @@ class Apartment {
     double area_m2;
 
     // TODO: Include more properties
+    // Residents
 };
