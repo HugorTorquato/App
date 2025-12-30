@@ -11,6 +11,13 @@ struct MaintenanceRequestDTO {
     std::string description;
     MaintenanceStatus status;  // Open, InProgress, Completed
     int priority;              // 1–5
+
+    // When you write testing::Eq(inputDTO), GoogleMock looks for an operator== for that class. If it doesn't find one,
+    // the compiler throws this "no match" error. Need to define how to consider two objects equal
+    bool operator==(const MaintenanceRequestDTO& other) const {
+        return id == other.id && resident_id == other.resident_id && apartment_id == other.apartment_id &&
+               description == other.description && status == other.status && priority == other.priority;
+    }
 };
 
 inline void to_json(nlohmann::json& j, const MaintenanceRequestDTO& r) {

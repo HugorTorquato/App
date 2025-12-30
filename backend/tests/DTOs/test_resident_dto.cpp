@@ -53,3 +53,16 @@ TEST_F(ResidentDTOTest, ValidateRoundTripDataFromResidentDTO) {
     EXPECT_EQ(R1.phone, deserializedResident.phone);
     EXPECT_EQ(R1.apartment_number, deserializedResident.apartment_number);
 }
+
+TEST_F(ResidentDTOTest, ValidateEqualityOperatorForResidentDTO) {
+    ResidentDTO R2;
+    R2.id = 201;
+    R2.name = "John Doe";
+    R2.phone = "9876543210";
+    R2.apartment_number = "101";
+
+    EXPECT_TRUE(R1 == R2);
+
+    R2.phone = "1234567890";  // Change one field
+    EXPECT_FALSE(R1 == R2);
+}

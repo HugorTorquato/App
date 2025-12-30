@@ -267,3 +267,14 @@ TEST_F(BuildingDTOTest, ApartmentDTOJSONStructure) {
     EXPECT_TRUE(j["number"].is_string());
     EXPECT_TRUE(j["area_m2"].is_number_float());
 }
+
+TEST_F(BuildingDTOTest, ValidateEqualityOperatorForBuildingDTO) {
+    BuildingDTO b2;
+    b2.id = 1;
+    b2.name = "Sunset Apartments";
+    b2.address = "123 Main St";
+    b2.total_floors = 5;
+    b2.apartments = {A1, A2};
+
+    EXPECT_TRUE(building == b2);
+}

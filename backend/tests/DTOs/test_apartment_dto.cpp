@@ -47,3 +47,15 @@ TEST_F(ApartmentDTOTest, ValidateRoundTripDataFromApartmentDTO) {
     EXPECT_EQ(R1.number, deserializedApartment.number);
     EXPECT_EQ(R1.area_m2, deserializedApartment.area_m2);
 }
+
+TEST_F(ApartmentDTOTest, ValidateEqualityOperatorForApartmentDTO) {
+    ApartmentDTO R2;
+    R2.id = 201;
+    R2.number = "101";
+    R2.area_m2 = 75.5;
+
+    EXPECT_TRUE(R1 == R2);
+
+    R2.area_m2 = 80.0;
+    EXPECT_FALSE(R1 == R2);
+}

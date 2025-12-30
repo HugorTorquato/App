@@ -68,3 +68,15 @@ TEST_F(MaintenanceRequestDTOTest, ValidateRoundTripDataFromMaintenanceRequestDTO
     EXPECT_EQ(R1.status, deserializedRequest.status);
     EXPECT_EQ(R1.priority, deserializedRequest.priority);
 }
+
+TEST_F(MaintenanceRequestDTOTest, ValidateEqualityOperatorForMaintenanceRequestDTO) {
+    MaintenanceRequestDTO R2;
+    R2.id = 301;
+    R2.resident_id = 401;
+    R2.apartment_id = 501;
+    R2.description = "Leaky faucet in kitchen";
+    R2.status = MaintenanceStatus::Open;
+    R2.priority = 3;
+
+    EXPECT_TRUE(R1 == R2);
+}

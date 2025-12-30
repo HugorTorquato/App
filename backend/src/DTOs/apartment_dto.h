@@ -8,6 +8,12 @@ class ApartmentDTO {
     int id;
     std::string number;
     double area_m2;
+
+    // When you write testing::Eq(inputDTO), GoogleMock looks for an operator== for that class. If it doesn't find one,
+    // the compiler throws this "no match" error. Need to define how to consider two objects equal
+    bool operator==(const ApartmentDTO& other) const {
+        return id == other.id && number == other.number && area_m2 == other.area_m2;
+    }
 };
 
 inline void to_json(nlohmann::json& j, const ApartmentDTO& r) {

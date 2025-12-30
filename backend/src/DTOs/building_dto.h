@@ -12,6 +12,13 @@ class BuildingDTO {
     std::string address;
     int total_floors;
     std::vector<ApartmentDTO> apartments;
+
+    // When you write testing::Eq(inputDTO), GoogleMock looks for an operator== for that class. If it doesn't find one,
+    // the compiler throws this "no match" error. Need to define how to consider two objects equal
+    bool operator==(const BuildingDTO& other) const {
+        return id == other.id && name == other.name && address == other.address && total_floors == other.total_floors &&
+               apartments == other.apartments;
+    }
 };
 
 // JSON serialization for BuildingDTO
