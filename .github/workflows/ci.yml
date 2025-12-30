@@ -100,7 +100,7 @@ jobs:
       # -----------------------------
       - name: Build test stack and run integration tests
         run: |
-          docker compose 
+          docker compose \
             -f infra/docker-compose.yml \
             --profile test up --build \
             --abort-on-container-exit \

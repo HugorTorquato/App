@@ -55,6 +55,7 @@ docker builder prune
 
 
 ## Run integration test stack independently
+# --build to rebuild the image
 docker compose --profile test up --build --abort-on-container-exit --exit-code-from tests
 
 # No rebuild No prod restart Just tests again
