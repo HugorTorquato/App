@@ -53,7 +53,7 @@ TEST_F(MaintenanceRequestControllerTests, CreateMaintenanceRequestReturns201AndM
     // Assert
     EXPECT_EQ(res.code, 201);
     Logger::info("Response DTO: " + res.body);
-    EXPECT_EQ(res.body, nlohmann::json({"id", expectedMaintenanceRequestId}).dump());
+    EXPECT_EQ(res.body, nlohmann::json({{"id", expectedMaintenanceRequestId}}).dump());
 }
 
 TEST_F(MaintenanceRequestControllerTests, GetMaintenanceRequestByIdReturns200AndMaintenanceRequestJsonOnSuccess) {

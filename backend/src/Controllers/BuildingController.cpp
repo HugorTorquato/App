@@ -21,7 +21,7 @@ crow::response BuildingController::create(const crow::request& req) {
         crow::response res;
         res.code = 201;
         res.set_header("Location", "/buildings/" + std::to_string(buildingEntityID));
-        res.body = nlohmann::json({"id", buildingEntityID}).dump();
+        res.body = nlohmann::json({{"id", buildingEntityID}}).dump();
         return res;
     } catch (const std::exception& e) {
         Logger::info(std::string("Error in BuildingController::create: ") + e.what());

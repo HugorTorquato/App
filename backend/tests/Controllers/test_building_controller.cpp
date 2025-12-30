@@ -52,7 +52,7 @@ TEST_F(BuildingControllerTests, CreateBuildingReturns201AndBuildingJsonOnSuccess
     // Assert
     EXPECT_EQ(res.code, 201);
     Logger::info("Response DTO: " + res.body);
-    EXPECT_EQ(res.body, nlohmann::json({"id", expectedBuildingId}).dump());
+    EXPECT_EQ(res.body, nlohmann::json({{"id", expectedBuildingId}}).dump());
 }
 
 TEST_F(BuildingControllerTests, GetBuildingByIdReturns200AndBuildingJsonOnSuccess) {

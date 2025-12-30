@@ -21,7 +21,7 @@ crow::response ApartmentController::create(const crow::request& req) {
         crow::response res;
         res.code = 201;
         res.set_header("Location", "/apartments/" + std::to_string(apartmentEntityID));
-        res.body = nlohmann::json({"id", apartmentEntityID}).dump();
+        res.body = nlohmann::json({{"id", apartmentEntityID}}).dump();
         return res;
     } catch (const std::exception& e) {
         Logger::info(std::string("Error in ApartmentController::create: ") + e.what());

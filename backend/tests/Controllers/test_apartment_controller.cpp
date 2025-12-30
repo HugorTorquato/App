@@ -52,7 +52,7 @@ TEST_F(ApartmentControllerTests, CreateApartmentReturns201AndApartmentJsonOnSucc
     // Assert
     EXPECT_EQ(res.code, 201);
     Logger::info("Response DTO: " + res.body);
-    EXPECT_EQ(res.body, nlohmann::json({"id", expectedApartmentId}).dump());
+    EXPECT_EQ(res.body, nlohmann::json({{"id", expectedApartmentId}}).dump());
 }
 
 TEST_F(ApartmentControllerTests, GetApartmentByIdReturns200AndApartmentJsonOnSuccess) {

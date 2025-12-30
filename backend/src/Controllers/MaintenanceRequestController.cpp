@@ -21,7 +21,7 @@ crow::response MaintenanceRequestController::create(const crow::request& req) {
         crow::response res;
         res.code = 201;
         res.set_header("Location", "/maintenance_requests/" + std::to_string(maintenanceRequestEntityID));
-        res.body = nlohmann::json({"id", maintenanceRequestEntityID}).dump();
+        res.body = nlohmann::json({{"id", maintenanceRequestEntityID}}).dump();
         return res;
     } catch (const std::exception& e) {
         Logger::info(std::string("Error in MaintenanceRequestController::create: ") + e.what());

@@ -7,6 +7,10 @@
 #include "crow/http_request.h"
 #include "crow/http_response.h"
 
+// TODO:
+// - CREATE rout should return DTO instead of ID
+// - Should not create resident if ID already exists
+
 crow::response ResidentController::create(const crow::request& req) {
     try {
         auto jsonReq = nlohmann::json::parse(req.body);
@@ -21,7 +25,7 @@ crow::response ResidentController::create(const crow::request& req) {
         crow::response res;
         res.code = 201;
         res.set_header("Location", "/residents/" + std::to_string(residentEntityID));
-        res.body = nlohmann::json({"id", residentEntityID}).dump();
+        res.body = nlohmann::json({{"id", residentEntityID}}).dump();
         return res;
     } catch (const std::exception& e) {
         Logger::info(std::string("Error in ResidentController::create: ") + e.what());

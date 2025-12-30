@@ -53,7 +53,7 @@ TEST_F(ResidentControllerTests, CreateResidentReturns201AndResidentJsonOnSuccess
     // Assert
     EXPECT_EQ(res.code, 201);
     Logger::info("Response DTO: " + res.body);
-    EXPECT_EQ(res.body, nlohmann::json({"id", expectedResidentId}).dump());
+    EXPECT_EQ(res.body, nlohmann::json({{"id", expectedResidentId}}).dump());
 
     // TODO: I would be able to do this if i had returned the DTO, but it's only an integer ID
     // ResidentDTO responseDTO = responseJson.get<ResidentDTO>();
