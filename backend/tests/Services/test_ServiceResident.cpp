@@ -128,3 +128,22 @@ TEST_F(ServiceResidentTest, CreateMultipleResidentsAndFetchThem) {
         EXPECT_EQ(fetchedResidentDTO.apartment_number, "Apt " + std::to_string(100 + i));
     }
 }
+
+TEST_F(ServiceResidentTest, CreateResidentReturnsUniqueIds) {
+    std::set<int> residentIds;
+    const int numResidents = 10;
+
+    for (int i = 0; i < numResidents; ++i) {
+        ResidentDTO dto;
+        dto.id = i;
+        dto.name = "Resident " + std::to_string(i);
+        dto.phone = "555-000" + std::to_string(i);
+        dto.apartment_number = "Apt " + std::to_string(100 + i);
+        int newId = service.createResident(dto);
+        EXPECT_TRUE(residentIds.find(newId) == residentIds.end()) << "Duplicate Resident ID found: " << newId;
+        residentIds.insert(newId);
+    }
+
+    EXPECT_EQ(residentIds.size(), numResidents);
+}
+
