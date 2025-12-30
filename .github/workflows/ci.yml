@@ -93,3 +93,19 @@ jobs:
       #   uses: ishworkh/docker-image-artifact-upload@v1
       #   with:
       #     image: condo_backend_prod
+
+      
+      # -----------------------------
+      # Run integration tests (Docker based)
+      # -----------------------------
+      - name: Build test stack and run integration tests
+        run: |
+          docker compose 
+            -f infra/docker-compose.yml \
+            --profile test up --build \
+            --abort-on-container-exit \
+            --exit-code-from tests
+
+      - name: Shutdown test stack
+        if: always()
+        run: docker compose -f infra/docker-compose.yml --profile test down

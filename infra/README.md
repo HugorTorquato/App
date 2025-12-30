@@ -10,7 +10,8 @@ This project uses **two Docker environments**:
 
 ### Build and run the dev container
 ```bash
-docker compose up -d dev
+# docker compose up -d dev
+docker compose --profile dev up -d
 
 # Access the running container
 
@@ -51,3 +52,17 @@ docker compose down
 docker image prune -a
 # Clean build cache
 docker builder prune
+
+
+## Run integration test stack independently
+docker compose --profile test up --build --abort-on-container-exit --exit-code-from tests
+
+# No rebuild No prod restart Just tests again
+# This is perfect while writing test code.
+docker compose run --rm tests
+
+# Build the production env so i can leave the api running
+docker compose up prod --build
+
+# Build the integration test container so i can run integration tests
+docker compose run --build --rm tests

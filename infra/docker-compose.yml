@@ -1,21 +1,46 @@
 version: "3.9"
 
+networks:
+  condo_net:
+    driver: bridge
+
 services:
+
   dev:
+    profiles: ["dev"]
     build:
       context: ..
       dockerfile: backend/Dockerfile.dev
     volumes:
-      - ../.:/app                # Mount your local code
-    command: tail -f /dev/null # Keep container alive
+      - ../.:/app
+    command: tail -f /dev/null
     container_name: app_dev
     tty: true
     working_dir: /app
+    networks:
+      - condo_net
 
   prod:
+    profiles: ["test"]
     build:
       context: ..
       dockerfile: backend/Dockerfile
     container_name: app_prod
+    networks:
+      - condo_net
     ports:
       - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 2s
+      retries: 15
+
+  tests:
+    profiles: ["test"]
+    build:
+      context: ..
+      dockerfile: IntegrationTests/Dockerfile.tests
+    container_name: condo_api_tests
+    networks:
+      - condo_net

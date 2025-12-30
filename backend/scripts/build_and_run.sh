@@ -42,6 +42,6 @@ make -j$(nproc)
 
 ctest --output-on-failure
 
-# Run
-echo "🚀 Starting Crow API..."
-./$EXECUTABLE_NAME
+# # Run
+# echo "🚀 Starting Crow API..."
+# ./$EXECUTABLE_NAME
