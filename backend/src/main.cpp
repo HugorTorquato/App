@@ -6,15 +6,15 @@
 #include "Composition/Resident_composition.h"
 #include "Routes/Utils/General_API_Info_V1.h"
 #include "Routes/v1/MaintenanceRequest_routes.h"
-#include "Routes/v1/apartment_routes.h"
-#include "Routes/v1/building_routes.h"
-#include "Routes/v1/resident_routes.h"
+#include "Routes/v1/Apartment_routes.h"
+#include "Routes/v1/Building_routes.h"
+#include "Routes/v1/Resident_routes.h"
 #include "Utils/Logger.h"
 
 int main() {
     crow::SimpleApp app;
 
-    CROW_ROUTE(app, "/")([]() { return "Hello from Crow backend!"; });
+    CROW_ROUTE(app, "/health")([]() { return "Hello from Crow backend!"; });
 
     registerGeneralAPIInfoV1(app);
 
