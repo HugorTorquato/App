@@ -6,6 +6,32 @@ networks:
 
 services:
 
+  # -------------------------
+  # PostgreSQL Database
+  # -------------------------
+  postgres:
+    image: postgres:16
+    profiles: ["dev", "test"]
+    container_name: condo_db
+    environment:
+      POSTGRES_DB: condo
+      POSTGRES_USER: condo_user
+      POSTGRES_PASSWORD: condo_pass
+    ports:
+      - "5432:5432"         # expose locally if you want to connect using client
+    volumes:
+      - condo_pg_data:/var/lib/postgresql/data
+    networks:
+      - condo_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U condo_user -d condo"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # -------------------------
+  # DEV container (no API auto-run)
+  # -------------------------
   dev:
     profiles: ["dev"]
     build:
@@ -19,7 +45,13 @@ services:
     working_dir: /app
     networks:
       - condo_net
+    depends_on:
+      postgres:
+        condition: service_healthy
 
+  # -------------------------
+  # Production API for tests
+  # -------------------------
   prod:
     profiles: ["test"]
     build:
@@ -30,12 +62,20 @@ services:
       - condo_net
     ports:
       - "8080:8080"
+    environment:
+      DB_CONNECTION_STRING: postgres://condo_user:condo_pass@postgres:5432/condo
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 5s
       timeout: 2s
       retries: 15
 
+  # -------------------------
+  # Integration test runner
+  # -------------------------
   tests:
     profiles: ["test"]
     build:
@@ -44,3 +84,9 @@ services:
     container_name: condo_api_tests
     networks:
       - condo_net
+    # depends_on:
+    #   prod:
+    #     condition: service_healthy
+
+volumes:
+  condo_pg_data:

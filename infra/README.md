@@ -67,3 +67,19 @@ docker compose up prod --build
 
 # Build the integration test container so i can run integration tests
 docker compose run --build --rm tests
+
+# Run local dev env with database
+docker compose --profile dev up -d
+# Service	Purpose
+# postgres	database
+# dev	your development shell
+
+## Run locally in TEST mode (integration tests)
+docker compose --profile test up --build
+# What happens automatically:
+# Postgres starts
+# waits until healthy
+# backend prod container starts
+# waits until /health OK
+# integration test container runs HTTP calls
+# Docker shuts everything down
