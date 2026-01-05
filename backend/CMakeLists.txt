@@ -8,43 +8,43 @@ project(condo_backend
     LANGUAGES CXX
 )
 
-# Use modern C++
+# ======================
+#  COMPILER SETTINGS
+# ======================
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)   # Required for static libs used in shared contexts
-
-# Output binaries into /build/bin/
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-
 # ======================
-#  CODE COVERAGE (OPTIONAL)
+#  BUILD OPTIONS
 # ======================
 option(ENABLE_COVERAGE "Enable test coverage reporting" OFF)
 
-if (ENABLE_COVERAGE)
+if(ENABLE_COVERAGE)
     message(STATUS "Building with coverage flags enabled")
     add_compile_options(--coverage)
     add_link_options(--coverage)
 endif()
 
 # ======================
-#  DEPENDENCY DISCOVERY
+#  DEPENDENCIES
 # ======================
+find_package(Boost REQUIRED COMPONENTS system thread)
+find_package(OpenSSL REQUIRED)
+find_package(PostgreSQL REQUIRED)
+find_package(Threads REQUIRED)
 
-find_package(Boost REQUIRED COMPONENTS system thread) # Boost (Header + system + thread)
-find_package(OpenSSL REQUIRED) # OpenSSL (crypto + ssl)
-find_package(PostgreSQL REQUIRED) # PostgreSQL client (libpq)
-# find_package(PQXX REQUIRED)
-find_package(Threads REQUIRED) # POSIX threads – required by Crow and Boost
-
-
+find_package(PQXX QUIET)
+if(NOT PQXX_FOUND)
+    # message(STATUS "PQXX CMake package not found — falling back to manual lookup")
+    find_library(PQXX_LIB pqxx REQUIRED)
+endif()
 
 # ======================
-#  UNIT TEST FRAMEWORK (GoogleTest)
+#  TESTING
 # ======================
 enable_testing()
-
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -52,70 +52,36 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-
 # ======================
-#  PROJECT STRUCTURE
+#  SUBDIRECTORIES
 # ======================
-add_subdirectory(src)      # Builds the domain static library
-add_subdirectory(tests)    # Builds unit tests
-
+add_subdirectory(src)
+add_subdirectory(tests)
 
 # ======================
 #  MAIN EXECUTABLE
 # ======================
 add_executable(condo_backend src/main.cpp)
 
-# Compile warnings
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(condo_backend PRIVATE -Wall -Wextra -Wpedantic -O2)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+# Compiler warnings
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(condo_backend PRIVATE -Wall -Wextra -Wpedantic -O2)
 endif()
 
-find_package(PQXX QUIET)
-if (NOT PQXX_FOUND)
-    message(STATUS "PQXX CMake package not found — falling back to manual lookup")
-
-    find_library(PQXX_LIB pqxx REQUIRED)
-
-    # Some distros also require libpq explicitly
-    target_link_libraries(condo_backend PRIVATE
-        ${PQXX_LIB}
-        ${PostgreSQL_LIBRARIES}
-    )
-else()
-    message(STATUS "Found pqxx via CMake config")
-    target_link_libraries(condo_backend PRIVATE pqxx::pqxx)
-endif()
-
-
-# ======================
-#  INCLUDE PATHS
-# ======================
-
-# Crow is header-only
+# Include directories
 target_include_directories(condo_backend PRIVATE
     ${CMAKE_SOURCE_DIR}/../vendor/crow/include
 )
 
-# ======================
-#  LINKING
-# ======================
+# Link libraries
 target_link_libraries(condo_backend PRIVATE
     domain
-
-    # Boost
     Boost::system
     Boost::thread
-
-    # OpenSSL
     OpenSSL::SSL
     OpenSSL::Crypto
-
-    # PostgreSQL C client
     PostgreSQL::PostgreSQL
-
-    # Pthreads
     Threads::Threads
+    ${PQXX_LIB}
+    ${PostgreSQL_LIBRARIES} 
 )
-
