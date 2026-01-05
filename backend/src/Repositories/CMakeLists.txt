@@ -4,3 +4,4 @@
 # Add subdirectories for modular structure
 add_subdirectory(interfaces)
 add_subdirectory(inmemory)
+add_subdirectory(PostgresDB)
