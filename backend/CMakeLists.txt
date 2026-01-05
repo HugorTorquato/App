@@ -28,22 +28,16 @@ if (ENABLE_COVERAGE)
     add_link_options(--coverage)
 endif()
 
-
 # ======================
 #  DEPENDENCY DISCOVERY
 # ======================
 
-# Boost (Header + system + thread)
-find_package(Boost REQUIRED COMPONENTS system thread)
+find_package(Boost REQUIRED COMPONENTS system thread) # Boost (Header + system + thread)
+find_package(OpenSSL REQUIRED) # OpenSSL (crypto + ssl)
+find_package(PostgreSQL REQUIRED) # PostgreSQL client (libpq)
+# find_package(PQXX REQUIRED)
+find_package(Threads REQUIRED) # POSIX threads – required by Crow and Boost
 
-# OpenSSL (crypto + ssl)
-find_package(OpenSSL REQUIRED)
-
-# PostgreSQL client (libpq)
-find_package(PostgreSQL REQUIRED)
-
-# POSIX threads – required by Crow and Boost
-find_package(Threads REQUIRED)
 
 
 # ======================
@@ -78,6 +72,22 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     target_compile_options(condo_backend PRIVATE -Wall -Wextra -Wpedantic -O2)
 endif()
 
+find_package(PQXX QUIET)
+if (NOT PQXX_FOUND)
+    message(STATUS "PQXX CMake package not found — falling back to manual lookup")
+
+    find_library(PQXX_LIB pqxx REQUIRED)
+
+    # Some distros also require libpq explicitly
+    target_link_libraries(condo_backend PRIVATE
+        ${PQXX_LIB}
+        ${PostgreSQL_LIBRARIES}
+    )
+else()
+    message(STATUS "Found pqxx via CMake config")
+    target_link_libraries(condo_backend PRIVATE pqxx::pqxx)
+endif()
+
 
 # ======================
 #  INCLUDE PATHS
@@ -88,12 +98,11 @@ target_include_directories(condo_backend PRIVATE
     ${CMAKE_SOURCE_DIR}/../vendor/crow/include
 )
 
-
 # ======================
 #  LINKING
 # ======================
 target_link_libraries(condo_backend PRIVATE
-    domain              # Your domain library
+    domain
 
     # Boost
     Boost::system
@@ -103,7 +112,7 @@ target_link_libraries(condo_backend PRIVATE
     OpenSSL::SSL
     OpenSSL::Crypto
 
-    # PostgreSQL (libpq)
+    # PostgreSQL C client
     PostgreSQL::PostgreSQL
 
     # Pthreads
