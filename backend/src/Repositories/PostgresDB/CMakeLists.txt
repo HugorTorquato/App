@@ -6,6 +6,9 @@
 target_sources(domain PRIVATE
     DbConnectionFactory.cpp
     PostgresResidentRepository.cpp
+    PostgresApartmentRepository.cpp
+    PostgresBuildingRepository.cpp
+    PostgresMaintenanceRequestRepository.cpp
 )
 
 target_include_directories(domain INTERFACE
