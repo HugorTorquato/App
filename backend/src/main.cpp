@@ -21,12 +21,12 @@ int main() {
     registerGeneralAPIInfoV1(app);
 
     // Dependencies rules - This instantiat each domain with the respective repositories, services and controllers
-    const char* mode = std::getenv("REPOSITORY_IMPL");
+    // const char* mode = std::getenv("REPOSITORY_IMPL");
+    const char* mode = "InMemory";
     ResidentModule resident(mode);
-    ApartmentModule apartment;
-    BuildingModule building;
-    MaintenanceRequestModule maintenanceRequest;
-
+    ApartmentModule apartment(mode);
+    BuildingModule building(mode);
+    MaintenanceRequestModule maintenanceRequest(mode);
     // Routes
     registerResidentRoutes(app, resident.controller);
     registerApartmentRoutes(app, apartment.controller);
