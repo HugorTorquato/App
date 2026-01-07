@@ -11,13 +11,13 @@ struct ApartmentModule {
     ApartmentService service;
     ApartmentController controller;
 
-    ApartmentModule(const char* mode) : repo(selectRepository(mode)), service(*repo), controller(service) {
+    ApartmentModule(const std::string& mode) : repo(selectRepository(mode)), service(*repo), controller(service) {
         Logger::info("[ApartmentModule] Initialized;");
     }
 
    private:
-    static std::unique_ptr<IApartmentRepository> selectRepository(const char* mode) {
-        if (mode && std::string(mode) == "InMemory") {
+    static std::unique_ptr<IApartmentRepository> selectRepository(const std::string& mode) {
+        if (!mode.empty() && mode == "InMemory") {
             Logger::info("[ApartmentModule] Using InMemoryApartmentRepository");
             return std::make_unique<InMemoryApartmentRepository>();
         }

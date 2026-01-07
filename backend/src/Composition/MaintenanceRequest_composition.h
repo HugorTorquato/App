@@ -11,13 +11,14 @@ struct MaintenanceRequestModule {
     MaintenanceRequestService service;
     MaintenanceRequestController controller;
 
-    MaintenanceRequestModule(const char* mode) : repo(selectRepository(mode)), service(*repo), controller(service) {
+    MaintenanceRequestModule(const std::string& mode)
+        : repo(selectRepository(mode)), service(*repo), controller(service) {
         Logger::info("[MaintenanceRequestModule] Initialized;");
     }
 
    private:
-    static std::unique_ptr<IMaintenanceRequestRepository> selectRepository(const char* mode) {
-        if (mode && std::string(mode) == "InMemory") {
+    static std::unique_ptr<IMaintenanceRequestRepository> selectRepository(const std::string& mode) {
+        if (!mode.empty() && mode == "InMemory") {
             Logger::info("[MaintenanceRequestModule] Using InMemoryMaintenanceRequestRepository");
             return std::make_unique<InMemoryMaintenanceRequestRepository>();
         }

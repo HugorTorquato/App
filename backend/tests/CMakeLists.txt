@@ -6,6 +6,7 @@ add_executable(runTests
     test_hello.cpp
     Utils/test_logger.cpp
     Utils/test_ApiError.cpp
+    Utils/test_Env.cpp
     DTOs/test_building_dto.cpp
     DTOs/test_resident_dto.cpp
     DTOs/test_apartment_dto.cpp
@@ -32,6 +33,10 @@ add_executable(runTests
     Controllers/test_apartment_controller.cpp
     Controllers/test_building_controller.cpp
     Controllers/test_maintenanceRequest_controller.cpp
+    Composition/test_resident_composition.cpp
+    Composition/test_apartment_composition.cpp
+    Composition/test_building_composition.cpp
+    Composition/test_maintenanceRequest_composition.cpp
 )
 
 # ======================

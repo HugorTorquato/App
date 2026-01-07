@@ -9,6 +9,7 @@
 #include "Routes/v1/Building_routes.h"
 #include "Routes/v1/MaintenanceRequest_routes.h"
 #include "Routes/v1/Resident_routes.h"
+#include "Utils/Env.h"
 #include "Utils/Logger.h"
 
 int main() {
@@ -21,12 +22,12 @@ int main() {
     registerGeneralAPIInfoV1(app);
 
     // Dependencies rules - This instantiat each domain with the respective repositories, services and controllers
-    // const char* mode = std::getenv("REPOSITORY_IMPL");
-    const char* mode = "InMemory";
+    std::string mode = Env::getEnv("REPOSITORY_IMPL", "InMemory");
     ResidentModule resident(mode);
     ApartmentModule apartment(mode);
     BuildingModule building(mode);
     MaintenanceRequestModule maintenanceRequest(mode);
+
     // Routes
     registerResidentRoutes(app, resident.controller);
     registerApartmentRoutes(app, apartment.controller);
