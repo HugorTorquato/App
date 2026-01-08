@@ -46,3 +46,5 @@ backend/build/
 backend/.cache/
 build/
 .cache/
+
+.env
