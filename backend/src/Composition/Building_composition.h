@@ -17,13 +17,13 @@ struct BuildingModule {
 
    private:
     static std::unique_ptr<IBuildingRepository> selectRepository(const std::string& mode) {
-        if (!mode.empty() && mode == "InMemory") {
+        if (mode == "InMemory") {
             Logger::info("[BuildingModule] Using InMemoryBuildingRepository");
             return std::make_unique<InMemoryBuildingRepository>();
         }
 
         // Postgres Default
-        Logger::info("[BuildingModule] Using PostgresBuildingRepository (default)");
+        Logger::info("[BuildingModule] Using PostgresBuildingRepository (default) (Actual value: " + mode + ")");
         return std::make_unique<PostgresBuildingRepository>();
     }
 };

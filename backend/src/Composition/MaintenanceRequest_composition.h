@@ -18,13 +18,13 @@ struct MaintenanceRequestModule {
 
    private:
     static std::unique_ptr<IMaintenanceRequestRepository> selectRepository(const std::string& mode) {
-        if (!mode.empty() && mode == "InMemory") {
+        if (mode == "InMemory") {
             Logger::info("[MaintenanceRequestModule] Using InMemoryMaintenanceRequestRepository");
             return std::make_unique<InMemoryMaintenanceRequestRepository>();
         }
 
         // Postgres Default
-        Logger::info("[MaintenanceRequestModule] Using PostgresMaintenanceRequestRepository (default)");
+        Logger::info("[MaintenanceRequestModule] Using PostgresMaintenanceRequestRepository (default) (Actual value: " + mode + ")");
         return std::make_unique<PostgresMaintenanceRequestRepository>();
     }
 };
