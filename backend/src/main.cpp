@@ -23,6 +23,8 @@ int main() {
 
     // Dependencies rules - This instantiat each domain with the respective repositories, services and controllers
     std::string mode = Env::getEnv("REPOSITORY_IMPL", "InMemory");
+    Logger::info(__PRETTY_FUNCTION__ + std::string(" - Using repository implementation mode: ") + mode);
+    
     ResidentModule resident(mode);
     ApartmentModule apartment(mode);
     BuildingModule building(mode);
