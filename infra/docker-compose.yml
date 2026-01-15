@@ -29,7 +29,7 @@ services:
       retries: 10
 
   # -------------------------
-  # DEV container (no API auto-run)
+  # DEV container
   # -------------------------
   dev:
     profiles: ["dev"]
@@ -49,7 +49,7 @@ services:
         condition: service_healthy
 
   # -------------------------
-  # Production API for tests
+  # API (used by integration tests)
   # -------------------------
   prod:
     profiles: ["test"]
@@ -61,6 +61,7 @@ services:
       - condo_net
     ports:
       - "8080:8080"
+
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -68,9 +69,11 @@ services:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       REPOSITORY_IMPL: ${REPOSITORY_IMPL}
+
     depends_on:
       postgres:
         condition: service_healthy
+
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 5s
@@ -89,12 +92,10 @@ services:
     networks:
       - condo_net
     environment:
-      # Tell your Python tests to talk to the 'prod' container
-      # Instead of http://localhost:8080
       API_URL: http://prod:8080
-    # depends_on:
-    #   prod:
-    #     condition: service_healthy
+    depends_on:
+      prod:
+        condition: service_healthy
 
 volumes:
   condo_pg_data:

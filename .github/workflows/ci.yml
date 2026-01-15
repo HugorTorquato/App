@@ -108,11 +108,21 @@ jobs:
       # -----------------------------
       - name: Run integration tests
         run: |
+          export DB_HOST="${DB_HOST}"
+          export DB_PORT="${DB_PORT}"
+          export DB_NAME="${DB_NAME}"
+          export DB_USER="${DB_USER}"
+          export DB_PASS="${DB_PASS}"
+          export REPOSITORY_IMPL="${REPOSITORY_IMPL}"
+
+          echo "REPOSITORY_IMPL=$REPOSITORY_IMPL"
+
           docker compose \
             -f infra/docker-compose.yml \
             --profile test up --build \
             --abort-on-container-exit \
             --exit-code-from tests
+
 
       - name: Shutdown test stack
         if: always()
