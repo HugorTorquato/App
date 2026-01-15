@@ -5,7 +5,6 @@ networks:
     driver: bridge
 
 services:
-
   # -------------------------
   # PostgreSQL Database
   # -------------------------
@@ -89,6 +88,10 @@ services:
     container_name: condo_api_tests
     networks:
       - condo_net
+    environment:
+      # Tell your Python tests to talk to the 'prod' container
+      # Instead of http://localhost:8080
+      API_URL: http://prod:8080
     # depends_on:
     #   prod:
     #     condition: service_healthy
