@@ -93,9 +93,9 @@ services:
       - condo_net
     environment:
       API_URL: http://prod:8080
-    depends_on:
-      prod:
-        condition: service_healthy
+    # depends_on:
+    #   prod:
+    #     condition: service_healthy
 
 volumes:
   condo_pg_data:
