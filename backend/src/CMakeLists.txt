@@ -17,3 +17,8 @@ add_subdirectory(Controllers)
 target_include_directories(domain INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+target_link_libraries(domain PUBLIC
+    pqxx
+    PostgreSQL::PostgreSQL
+)
