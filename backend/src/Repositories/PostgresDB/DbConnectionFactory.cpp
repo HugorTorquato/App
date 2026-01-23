@@ -1,16 +1,24 @@
 #include "DbConnectionFactory.h"
 
+// Helper to build config from Environment
+DbConfig DbConfig::fromEnv() {
+    auto get = [](const char* key) -> std::string {
+        const char* val = std::getenv(key);
+        // CRITICAL: Check pointer before converting to std::string
+        if (!val || std::string(val).empty()) {
+            throw std::runtime_error("Database Configuration Error: Missing environment variable: " + std::string(key));
+        }
+        return std::string(val);
+    };
+
+    return DbConfig{get("DB_HOST"), get("DB_PORT"), get("DB_NAME"), get("DB_USER"), get("DB_PASS")};
+}
+
+DbConnectionFactory::DbConnectionFactory(const DbConfig& config) : m_config(config) {}
+
 std::shared_ptr<pqxx::connection> DbConnectionFactory::createConnection() {
-    // Retrieve database connection parameters from environment variables
-    const char* host = std::getenv("DB_HOST");
-    const char* port = std::getenv("DB_PORT");
-    const char* dbname = std::getenv("DB_NAME");
-
-    // Construct the connection string
-    std::string connStr = "host=" + std::string(host ? host : "localhost") +
-                          " port=" + std::string(port ? port : "5432") +
-                          " dbname=" + std::string(dbname ? dbname : "condo");
-
-    // Create and return a shared pointer to the pqxx::connection
+    std::string connStr = "host=" + m_config.host + " port=" + m_config.port + " dbname=" + m_config.name +
+                          " user=" + m_config.user + " password=" + m_config.password;
+    // libpqxx throws an exception if the connection fails, so no need for extra checks here
     return std::make_shared<pqxx::connection>(connStr);
 }
