@@ -62,6 +62,7 @@ WORKDIR /app
 
 # Copy the compiled binary from build stage
 COPY --from=build /app/backend/build/bin/condo_backend .
+COPY --from=build /app/backend/build/bin/migrate .
 
 
 # Expose backend port

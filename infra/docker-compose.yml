@@ -17,7 +17,7 @@ services:
       POSTGRES_USER: condo_user
       POSTGRES_PASSWORD: condo_pass
     ports:
-      - "5432:5432"         # expose locally if you want to connect using client
+      - "5432:5432"
     volumes:
       - condo_pg_data:/var/lib/postgresql/data
     networks:
@@ -53,6 +53,7 @@ services:
   # -------------------------
   prod:
     profiles: ["test"]
+    image: condo_backend_prod
     build:
       context: ..
       dockerfile: backend/Dockerfile
@@ -61,7 +62,6 @@ services:
       - condo_net
     ports:
       - "8080:8080"
-
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -69,16 +69,37 @@ services:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       REPOSITORY_IMPL: ${REPOSITORY_IMPL}
-
     depends_on:
-      postgres:
-        condition: service_healthy
-
+      migrate:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 5s
       timeout: 2s
       retries: 15
+
+  # -------------------------
+  # Database migrations
+  # -------------------------
+  migrate:
+    profiles: ["test"]
+    image: condo_backend_prod 
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: condo_db_migrate
+    command: ./migrate
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    networks:
+      - condo_net
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   # -------------------------
   # Integration test runner
