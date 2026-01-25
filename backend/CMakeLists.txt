@@ -107,3 +107,17 @@ target_link_libraries(condo_backend PRIVATE
     Threads::Threads
     pqxx::pqxx
 )
+
+
+# ======================    
+#  MIGRATE EXECUTABLE
+# ======================
+# This executable runs database migrations.
+add_executable(migrate
+    src/Migration/main.cpp
+)
+
+target_link_libraries(migrate
+    pqxx
+    pq
+)
