@@ -28,18 +28,41 @@ if(ENABLE_COVERAGE)
 endif()
 
 # ======================
-#  DEPENDENCIES
+# PQXX (manual but safe)
+# ======================
+
+find_path(PQXX_INCLUDE_DIR
+    NAMES pqxx/pqxx
+)
+
+find_library(PQXX_LIBRARY
+    NAMES pqxx
+)
+
+if(NOT PQXX_INCLUDE_DIR OR NOT PQXX_LIBRARY)
+    message(FATAL_ERROR "libpqxx not found")
+endif()
+
+add_library(pqxx::pqxx UNKNOWN IMPORTED)
+
+set_target_properties(pqxx::pqxx PROPERTIES
+    IMPORTED_LOCATION ${PQXX_LIBRARY}
+    INTERFACE_INCLUDE_DIRECTORIES ${PQXX_INCLUDE_DIR}
+)
+
+# ======================
+# DEPENDENCIES
 # ======================
 find_package(Boost REQUIRED COMPONENTS system thread)
 find_package(OpenSSL REQUIRED)
 find_package(PostgreSQL REQUIRED)
 find_package(Threads REQUIRED)
 
-find_package(PQXX QUIET)
-if(NOT PQXX_FOUND)
-    # message(STATUS "PQXX CMake package not found — falling back to manual lookup")
-    find_library(PQXX_LIB pqxx REQUIRED)
-endif()
+# find_package(PQXX QUIET)
+# if(NOT PQXX_FOUND)
+#     # message(STATUS "PQXX CMake package not found — falling back to manual lookup")
+#     find_library(PQXX_LIB pqxx REQUIRED)
+# endif()
 
 # ======================
 #  TESTING
@@ -82,6 +105,19 @@ target_link_libraries(condo_backend PRIVATE
     OpenSSL::Crypto
     PostgreSQL::PostgreSQL
     Threads::Threads
-    ${PQXX_LIB}
-    ${PostgreSQL_LIBRARIES} 
+    pqxx::pqxx
+)
+
+
+# ======================    
+#  MIGRATE EXECUTABLE
+# ======================
+# This executable runs database migrations.
+add_executable(migrate
+    src/Migration/main.cpp
+)
+
+target_link_libraries(migrate
+    pqxx
+    pq
 )

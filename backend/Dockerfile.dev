@@ -26,6 +26,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
+# Copy the compiled binary from build stage
+COPY --from=build /app/backend/build/bin/condo_backend .
+COPY --from=build /app/backend/build/bin/migrate .
+
 # Keep the container running indefinitely
 # (this way you can exec into it, build and run manually)
 CMD ["tail", "-f", "/dev/null"]
