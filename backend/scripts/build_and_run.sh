@@ -15,6 +15,7 @@ find . -regex '.*\.\(cpp\|h\|hpp\)' -exec clang-format -i {} +
 # === CONFIG ===
 BUILD_DIR="build"
 EXECUTABLE_NAME="bin/condo_backend"
+EXECUTABLE_MIGRATION="bin/migrate"
 SRC_DIR="/app"
 INCLUDE_DIR="$CROW_INCLUDE_DIR"
 
@@ -41,6 +42,9 @@ cmake -DCMAKE_BUILD_TYPE=Debug \
 make -j$(nproc)
 
 ctest --output-on-failure
+
+# Run Migrations
+./$EXECUTABLE_MIGRATION
 
 # # Run
 # echo "🚀 Starting Crow API..."

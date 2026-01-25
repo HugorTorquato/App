@@ -2,8 +2,6 @@
 
 #include "../../src/Repositories/PostgresDB/DbConnectionFactory.h"
 
-//TODO: Create mocks
-
 class DbConnectionFactoryTest : public ::testing::Test {
    protected:
     // We use unique_ptr so we can initialize it AFTER SetUp runs
