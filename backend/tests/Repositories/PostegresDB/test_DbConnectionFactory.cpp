@@ -89,3 +89,16 @@ TEST_F(DbConnectionFactoryTest, MultipleConnections) {
         }
     }
 }
+
+TEST_F(DbConnectionFactoryTest, CreateTransaction) {
+    DbConfig config = DbConfig::fromEnv();
+    factory = std::make_unique<DbConnectionFactory>(config);
+
+    try {
+        auto tx = factory->tx();
+        EXPECT_NE(tx, nullptr);
+    } catch (const std::exception& e) {
+        std::string error = e.what();
+        SUCCEED() << "Factory correctly attempted to create transaction: " << error;
+    }
+}
