@@ -94,3 +94,34 @@ psql -U condo_user -d condo
 
 #If you see the following in termianl you are connected
 condo=#
+
+
+---
+
+## Quick start for PostgreSQL implementation work
+
+Use these commands when starting implementation work for DB-backed repositories:
+
+```bash
+# 1) Build and open dev shell (with postgres)
+docker compose --profile dev up -d --build
+docker exec -it app_dev bash
+
+# 2) Inside dev container: build binaries
+cd /app/backend
+cmake -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build -j$(nproc)
+
+# 3) Run migration executable with compose test profile
+docker compose --profile test up --build migrate
+
+# 4) Start API against Postgres
+docker compose --profile test up --build prod
+
+# 5) (Optional) run integration tests
+docker compose --profile test up --build --abort-on-container-exit --exit-code-from tests
+```
+
+Notes:
+- Compose now defaults DB vars to the internal `postgres` service (`DB_HOST=postgres`, `DB_PORT=5432`, etc.) unless overridden.
+- For local debugging without DB persistence, set `REPOSITORY_IMPL=InMemory`.
