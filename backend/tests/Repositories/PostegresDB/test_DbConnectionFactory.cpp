@@ -9,7 +9,7 @@ class DbConnectionFactoryTest : public ::testing::Test {
 
     void SetUp() override {
         // Prepare the environment
-        setenv("DB_HOST", "localhost", 1);
+        setenv("DB_HOST", "condo_db", 1);
         setenv("DB_PORT", "5432", 1);
         setenv("DB_NAME", "condo_test", 1);
         setenv("DB_USER", "postgres", 1);
@@ -29,7 +29,7 @@ class DbConnectionFactoryTest : public ::testing::Test {
 TEST_F(DbConnectionFactoryTest, LoadConfigFromEnvSuccess) {
     EXPECT_NO_THROW({
         DbConfig config = DbConfig::fromEnv();
-        EXPECT_EQ(config.host, "localhost");
+        EXPECT_EQ(config.host, "condo_db");
         EXPECT_EQ(config.name, "condo_test");
     });
 }
@@ -41,7 +41,7 @@ TEST_F(DbConnectionFactoryTest, ThrowsWhenEnvVarMissing) {
 }
 
 // 3. Test Factory Initialization and Connection Attempt
-// Note: This test will fail if a real Postgres is NOT running at localhost:5432
+// Note: This test will fail if a real Postgres is NOT running at condo_db:5432
 TEST_F(DbConnectionFactoryTest, CreateConnectionAttempt) {
     DbConfig config = DbConfig::fromEnv();
     factory = std::make_unique<DbConnectionFactory>(config);

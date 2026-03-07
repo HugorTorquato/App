@@ -32,19 +32,22 @@ mkdir -p $BUILD_DIR
 cd $BUILD_DIR
 
 # Run CMake
-cmake -DCMAKE_BUILD_TYPE=Debug \
-                  -DCMAKE_CXX_STANDARD=20 \
-                  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-                  -DCROW_INCLUDE_DIR=$INCLUDE_DIR \
-                  ..
+cmake \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  ..
 
 # Compile
 make -j$(nproc)
 
+# -----------------------------
+# Run unit tests
+# -----------------------------
+echo "🧪 Running unit tests..."
 ctest --output-on-failure
 
-# Run Migrations
-./$EXECUTABLE_MIGRATION
+# # Run Migrations
+# ./$EXECUTABLE_MIGRATION
 
 # # Run
 # echo "🚀 Starting Crow API..."
