@@ -20,6 +20,7 @@ std::shared_ptr<pqxx::connection> DbConnectionFactory::createConnection() {
     std::string connStr = "host=" + m_config.host + " port=" + m_config.port + " dbname=" + m_config.name +
                           " user=" + m_config.user + " password=" + m_config.password;
     // libpqxx throws an exception if the connection fails, so no need for extra checks here
+    Logger::info("Creating DB connection with config: " + connStr);
     return std::make_shared<pqxx::connection>(connStr);
 }
 
