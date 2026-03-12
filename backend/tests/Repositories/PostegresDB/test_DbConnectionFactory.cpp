@@ -49,8 +49,8 @@ TEST_F(DbConnectionFactoryTest, CreateConnectionAttempt) {
     // If no DB is present, pqxx will throw an exception here.
     // We catch it to prove the factory tried to use the correct string.
     try {
-        auto conn = factory->createConnection();
-        EXPECT_TRUE(conn->is_open());
+        auto session = factory->createSession();
+        EXPECT_TRUE(session.conn->is_open());
     } catch (const std::exception& e) {
         // If it fails because the DB isn't there, that's expected in a unit test,
         // but we verify the error came from libpqxx, not our code.
@@ -66,8 +66,8 @@ TEST_F(DbConnectionFactoryTest, CreateConnectionStringFormat) {
     // We can't directly access the connection string, but we can attempt to create a connection
     // and catch the exception to verify the format indirectly.
     try {
-        auto conn = factory->createConnection();
-        EXPECT_TRUE(conn->is_open());
+        auto session = factory->createSession();
+        EXPECT_TRUE(session.conn->is_open());
     } catch (const std::exception& e) {
         std::string error = e.what();
         SUCCEED() << "Factory correctly attempted connection with proper format: " << error;
@@ -81,8 +81,8 @@ TEST_F(DbConnectionFactoryTest, MultipleConnections) {
     const int numConnections = 5;
     for (int i = 0; i < numConnections; ++i) {
         try {
-            auto conn = factory->createConnection();
-            EXPECT_TRUE(conn->is_open());
+            auto session = factory->createSession();
+            EXPECT_TRUE(session.conn->is_open());
         } catch (const std::exception& e) {
             std::string error = e.what();
             SUCCEED() << "Factory correctly attempted connection " << (i + 1) << ": " << error;
@@ -95,8 +95,8 @@ TEST_F(DbConnectionFactoryTest, CreateTransaction) {
     factory = std::make_unique<DbConnectionFactory>(config);
 
     try {
-        auto tx = factory->tx();
-        EXPECT_NE(tx, nullptr);
+        auto session = factory->createSession();
+        EXPECT_NE(session.tx, nullptr);
     } catch (const std::exception& e) {
         std::string error = e.what();
         SUCCEED() << "Factory correctly attempted to create transaction: " << error;

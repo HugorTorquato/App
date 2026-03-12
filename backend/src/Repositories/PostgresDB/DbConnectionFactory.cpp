@@ -14,7 +14,17 @@ DbConfig DbConfig::fromEnv() {
     return DbConfig{get("DB_HOST"), get("DB_PORT"), get("DB_NAME"), get("DB_USER"), get("DB_PASS")};
 }
 
+pqxx::result DbSession::exec(const std::string& query) { return tx->exec(query); }
+
+void DbSession::commit() { tx->commit(); }
+
 DbConnectionFactory::DbConnectionFactory(const DbConfig& config) : m_config(config) {}
+
+DbSession DbConnectionFactory::createSession() {
+    auto connection = createConnection();
+    auto transaction = std::make_unique<pqxx::work>(*connection);
+    return DbSession{connection, std::move(transaction)};
+}
 
 std::shared_ptr<pqxx::connection> DbConnectionFactory::createConnection() {
     std::string connStr = "host=" + m_config.host + " port=" + m_config.port + " dbname=" + m_config.name +
@@ -22,9 +32,4 @@ std::shared_ptr<pqxx::connection> DbConnectionFactory::createConnection() {
     // libpqxx throws an exception if the connection fails, so no need for extra checks here
     Logger::info("Creating DB connection with config: " + connStr);
     return std::make_shared<pqxx::connection>(connStr);
-}
-
-std::shared_ptr<pqxx::work> DbConnectionFactory::tx() {
-    auto connection = createConnection();
-    return std::make_shared<pqxx::work>(*connection);
 }
