@@ -9,6 +9,7 @@ file(GLOB_RECURSE TEST_SOURCES
     Controllers/*.cpp
     Composition/*.cpp
     Utils/*.cpp
+    Migrations/*.cpp
 )
 
 add_executable(runTests

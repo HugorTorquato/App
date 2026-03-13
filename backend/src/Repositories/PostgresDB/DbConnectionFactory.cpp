@@ -16,14 +16,21 @@ DbConfig DbConfig::fromEnv() {
 
 pqxx::result DbSession::exec(const std::string& query) { return tx->exec(query); }
 
+pqxx::result DbSession::execParams(const std::string& query, const std::string& param) {
+    return tx->exec_params(query, param);
+}
+
 void DbSession::commit() { tx->commit(); }
 
 DbConnectionFactory::DbConnectionFactory(const DbConfig& config) : m_config(config) {}
 
-DbSession DbConnectionFactory::createSession() {
+std::unique_ptr<IDbSession> DbConnectionFactory::createSession() {
     auto connection = createConnection();
     auto transaction = std::make_unique<pqxx::work>(*connection);
-    return DbSession{connection, std::move(transaction)};
+    auto session = std::make_unique<DbSession>();
+    session->conn = connection;
+    session->tx = std::move(transaction);
+    return session;
 }
 
 std::shared_ptr<pqxx::connection> DbConnectionFactory::createConnection() {

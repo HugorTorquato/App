@@ -50,7 +50,9 @@ TEST_F(DbConnectionFactoryTest, CreateConnectionAttempt) {
     // We catch it to prove the factory tried to use the correct string.
     try {
         auto session = factory->createSession();
-        EXPECT_TRUE(session.conn->is_open());
+        auto* dbSession = dynamic_cast<DbSession*>(session.get());
+        ASSERT_NE(dbSession, nullptr);
+        EXPECT_TRUE(dbSession->conn->is_open());
     } catch (const std::exception& e) {
         // If it fails because the DB isn't there, that's expected in a unit test,
         // but we verify the error came from libpqxx, not our code.
@@ -59,21 +61,22 @@ TEST_F(DbConnectionFactoryTest, CreateConnectionAttempt) {
     }
 }
 
+// 4. Test connection string format by attempting a connection
 TEST_F(DbConnectionFactoryTest, CreateConnectionStringFormat) {
     DbConfig config = DbConfig::fromEnv();
     factory = std::make_unique<DbConnectionFactory>(config);
 
-    // We can't directly access the connection string, but we can attempt to create a connection
-    // and catch the exception to verify the format indirectly.
     try {
         auto session = factory->createSession();
-        EXPECT_TRUE(session.conn->is_open());
+        auto* dbSession = dynamic_cast<DbSession*>(session.get());
+        ASSERT_NE(dbSession, nullptr);
+        EXPECT_TRUE(dbSession->conn->is_open());
     } catch (const std::exception& e) {
-        std::string error = e.what();
-        SUCCEED() << "Factory correctly attempted connection with proper format: " << error;
+        SUCCEED() << "Factory correctly attempted connection with proper format: " << e.what();
     }
 }
 
+// 5. Test multiple connections can be created
 TEST_F(DbConnectionFactoryTest, MultipleConnections) {
     DbConfig config = DbConfig::fromEnv();
     factory = std::make_unique<DbConnectionFactory>(config);
@@ -82,23 +85,26 @@ TEST_F(DbConnectionFactoryTest, MultipleConnections) {
     for (int i = 0; i < numConnections; ++i) {
         try {
             auto session = factory->createSession();
-            EXPECT_TRUE(session.conn->is_open());
+            auto* dbSession = dynamic_cast<DbSession*>(session.get());
+            ASSERT_NE(dbSession, nullptr);
+            EXPECT_TRUE(dbSession->conn->is_open());
         } catch (const std::exception& e) {
-            std::string error = e.what();
-            SUCCEED() << "Factory correctly attempted connection " << (i + 1) << ": " << error;
+            SUCCEED() << "Factory correctly attempted connection " << (i + 1) << ": " << e.what();
         }
     }
 }
 
+// 6. Test that a transaction is created alongside the connection
 TEST_F(DbConnectionFactoryTest, CreateTransaction) {
     DbConfig config = DbConfig::fromEnv();
     factory = std::make_unique<DbConnectionFactory>(config);
 
     try {
         auto session = factory->createSession();
-        EXPECT_NE(session.tx, nullptr);
+        auto* dbSession = dynamic_cast<DbSession*>(session.get());
+        ASSERT_NE(dbSession, nullptr);
+        EXPECT_NE(dbSession->tx, nullptr);
     } catch (const std::exception& e) {
-        std::string error = e.what();
-        SUCCEED() << "Factory correctly attempted to create transaction: " << error;
+        SUCCEED() << "Factory correctly attempted to create transaction: " << e.what();
     }
 }

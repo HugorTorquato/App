@@ -1,7 +1,7 @@
 --- 001_Create_Residents.sql
 --- Purpose:  Create Residents Table
 
-CREATE TABLE Residents (
+CREATE TABLE IF NOT EXISTS Residents (
     id                  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     full_name           TEXT NOT NULL,
     document            TEXT NOT NULL,

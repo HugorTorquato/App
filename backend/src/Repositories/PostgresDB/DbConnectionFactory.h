@@ -5,6 +5,8 @@
 #include <string>
 
 #include "../../Utils/Env.h"
+#include "IDbConnectionFactory.h"
+#include "IDbSession.h"
 
 struct DbConfig {
    public:
@@ -18,20 +20,20 @@ struct DbConfig {
 };
 
 // This struct "bundles" the connection and its transaction
-struct DbSession {
+struct DbSession : public IDbSession {
     std::shared_ptr<pqxx::connection> conn;
-    std::unique_ptr<pqxx::work> tx;  // Fallback, access the TX directly
+    std::unique_ptr<pqxx::work> tx;
 
-    // Convenience methods to execute queries and commit transactions
-    pqxx::result exec(const std::string& query);
-    void commit();
+    pqxx::result exec(const std::string& query) override;
+    pqxx::result execParams(const std::string& query, const std::string& param) override;
+    void commit() override;
 };
 
-class DbConnectionFactory {
+class DbConnectionFactory : public IDbConnectionFactory {
    public:
     explicit DbConnectionFactory(const DbConfig& config);
 
-    DbSession createSession();
+    std::unique_ptr<IDbSession> createSession() override;
 
    private:
     std::shared_ptr<pqxx::connection> createConnection();
