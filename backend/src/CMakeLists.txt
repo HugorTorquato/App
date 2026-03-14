@@ -20,6 +20,6 @@ target_include_directories(domain INTERFACE
 )
 
 target_link_libraries(domain PUBLIC
-    pqxx
+    pqxx::pqxx
     PostgreSQL::PostgreSQL
 )

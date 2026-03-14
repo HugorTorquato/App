@@ -76,9 +76,8 @@ void MigrationRunner::run(const std::string& migrationsDir) {
         Logger::info("[MigrationRunner::run] Applying migration " + path.filename().string());
         session->exec(sql);
         session->execParams("INSERT INTO schema_migrations (version) VALUES ($1)", version);
+        session->commit();
     }
-
-    session->commit();
 
     Logger::info("[MigrationRunner::run] Migrations completed successfully");
 }

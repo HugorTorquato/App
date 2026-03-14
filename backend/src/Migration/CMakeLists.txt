@@ -10,6 +10,5 @@ add_executable(migrate main.cpp)
 target_link_libraries(migrate
     domain
     pqxx
-    pq
     Boost::system
 )

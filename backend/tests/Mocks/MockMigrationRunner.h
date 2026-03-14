@@ -3,7 +3,6 @@
 #include <gmock/gmock.h>
 
 #include "../../src/Migration/Runner/IMigrationRunner.h"
-#include "../../src/Migration/Runner/MigrationRunner.h"
 
 class MockMigrationRunner : public IMigrationRunner {
    public:

@@ -189,7 +189,6 @@ TEST_F(MigrationRunnerRunTest, Run_SkipsAlreadyApplied) {
     EXPECT_CALL(*rawSession, exec(testing::HasSubstr("CREATE TABLE IF NOT EXISTS schema_migrations"))).Times(1);
     EXPECT_CALL(*rawSession, exec("SELECT 1;")).Times(0);
     EXPECT_CALL(*rawSession, execParams(testing::_, testing::_)).Times(0);
-    EXPECT_CALL(*rawSession, commit()).Times(1);
 
     runner->run(tmpDir.string());
 }
@@ -214,7 +213,6 @@ TEST_F(MigrationRunnerRunTest, Run_EmptyMigrationsDir) {
     EXPECT_CALL(*rawSession, exec(testing::_)).Times(0);
     EXPECT_CALL(*rawSession, exec(testing::HasSubstr("CREATE TABLE IF NOT EXISTS schema_migrations"))).Times(1);
     EXPECT_CALL(*rawSession, execParams(testing::_, testing::_)).Times(0);
-    EXPECT_CALL(*rawSession, commit()).Times(1);
 
     runner->run(emptyDir.string());
 }
