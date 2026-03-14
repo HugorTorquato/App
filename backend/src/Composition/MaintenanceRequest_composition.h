@@ -24,7 +24,8 @@ struct MaintenanceRequestModule {
         }
 
         // Postgres Default
-        Logger::info("[MaintenanceRequestModule] Using PostgresMaintenanceRequestRepository (default) (Actual value: " + mode + ")");
+        Logger::info("[MaintenanceRequestModule] Using PostgresMaintenanceRequestRepository (default) (Actual value: " +
+                     mode + ")");
         return std::make_unique<PostgresMaintenanceRequestRepository>();
     }
 };

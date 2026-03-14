@@ -58,10 +58,20 @@ RUN rm -rf build && mkdir build && cd build && \
 # ==========
 FROM ubuntu:22.04 AS runtime
 
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    libpq5 \
+    libpqxx-6.4 \
+    libssl3 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # Copy the compiled binary from build stage
 COPY --from=build /app/backend/build/bin/condo_backend .
+COPY --from=build /app/backend/build/bin/migrate .
 
 
 # Expose backend port

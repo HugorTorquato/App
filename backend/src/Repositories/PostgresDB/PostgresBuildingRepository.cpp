@@ -1,8 +1,12 @@
 #include "PostgresBuildingRepository.h"
 
+#include "../../Utils/Logger.h"
+
 int PostgresBuildingRepository::save(const Building& building) {
     // Implementation for saving a building to PostgreSQL database
-    return 0;  // Placeholder return
+    int id = nextId++;
+    Logger::info(__PRETTY_FUNCTION__ + std::string("Building saved with id: " + std::to_string(id)));
+    return id;
 }
 
 std::optional<Building> PostgresBuildingRepository::findById(int id) {

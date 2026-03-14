@@ -1,8 +1,12 @@
 #include "PostgresApartmentRepository.h"
 
+#include "../../Utils/Logger.h"
+
 int PostgresApartmentRepository::save(const Apartment& apartment) {
     // Implementation for saving an apartment to PostgreSQL database
-    return 0;  // Placeholder return
+    int id = nextId++;
+    Logger::info(__PRETTY_FUNCTION__ + std::string("Apartment saved with id: " + std::to_string(id)));
+    return id;
 }
 
 std::optional<Apartment> PostgresApartmentRepository::findById(int id) {

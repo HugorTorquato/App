@@ -11,9 +11,15 @@ add_subdirectory(Domains)
 add_subdirectory(Repositories)
 add_subdirectory(Services)
 add_subdirectory(Controllers)
+add_subdirectory(Migration)
 
 # Let users of domain access headers inside src/
 # INTERFACE means: consumers get these include dirs, but this library itself does not compile code there.
 target_include_directories(domain INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(domain PUBLIC
+    pqxx::pqxx
+    PostgreSQL::PostgreSQL
 )
