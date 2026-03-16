@@ -20,6 +20,16 @@ pqxx::result DbSession::execParams(const std::string& query, const std::string& 
     return tx->exec_params(query, param);
 }
 
+// Multi-param overload: pqxx::params bundles each string into a type-safe parameter list
+// that pqxx substitutes for $1, $2, ... in the query safely (no SQL injection risk).
+pqxx::result DbSession::execParams(const std::string& query, const std::vector<std::string>& params) {
+    pqxx::params p;
+    for (const auto& param : params) {
+        p.append(param);
+    }
+    return tx->exec_params(query, p);
+}
+
 void DbSession::commit() { tx->commit(); }
 
 DbConnectionFactory::DbConnectionFactory(const DbConfig& config) : m_config(config) {}

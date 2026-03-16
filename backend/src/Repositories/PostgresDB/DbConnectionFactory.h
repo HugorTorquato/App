@@ -26,6 +26,7 @@ struct DbSession : public IDbSession {
 
     pqxx::result exec(const std::string& query) override;
     pqxx::result execParams(const std::string& query, const std::string& param) override;
+    pqxx::result execParams(const std::string& query, const std::vector<std::string>& params) override;
     void commit() override;
 };
 

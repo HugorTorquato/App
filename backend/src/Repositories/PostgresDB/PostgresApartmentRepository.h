@@ -1,18 +1,20 @@
 #pragma once
 
-#include <map>
+#include <memory>
 
 #include "../interfaces/IApartmentRepository.h"
+#include "IDbConnectionFactory.h"
 
 class PostgresApartmentRepository : public IApartmentRepository {
-   private:
-    std::map<int, Apartment> storage;
-    int nextId = 0;
-
    public:
+    explicit PostgresApartmentRepository(std::shared_ptr<IDbConnectionFactory> factory);
+
     int save(const Apartment& apartment) override;
     std::optional<Apartment> findById(int id) override;
     std::vector<Apartment> findAll() override;
     void update(const Apartment& apartment) override;
     void remove(int id) override;
+
+   private:
+    std::shared_ptr<IDbConnectionFactory> m_factory;
 };
