@@ -23,9 +23,12 @@ class MigrationRunner : public IMigrationRunner {
     void run(const std::string& migrationsDir) override;
     std::vector<MigrationFile> discoverMigrations(const std::string& dir) override;
 
+    void resetSchemas() override;
+
    protected:
     std::string readFile(const std::string& filePath);
     virtual std::unordered_set<std::string> getAppliedMigrations(IDbSession& session);
+    virtual std::vector<std::string> getTableNames(IDbSession& session);
 
    private:
     void ensureSchemaTable(IDbSession& session);
