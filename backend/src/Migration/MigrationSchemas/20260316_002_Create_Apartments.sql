@@ -1,4 +1,4 @@
---- 20260316_003_Create_Apartments.sql
+--- 002_Create_Apartments.sql
 --- Purpose:  Create Apartments Table
 
 CREATE TABLE IF NOT EXISTS Apartments (

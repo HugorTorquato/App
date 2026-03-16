@@ -1,4 +1,4 @@
---- 001_Create_Residents.sql
+--- 003_Create_Residents.sql
 --- Purpose:  Create Residents Table
 
 CREATE TABLE IF NOT EXISTS Residents (
