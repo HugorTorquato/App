@@ -183,11 +183,11 @@ TEST_F(MigrationRunnerFsTest, DiscoverMigrations_IgnoresNonSqlFiles) {
     }
 }
 
-// 5 ── discoverMigrations returns results sorted by filename
+// 5 ── discoverMigrations returns results sorted by version
 TEST_F(MigrationRunnerFsTest, DiscoverMigrations_IsSorted) {
     auto migrations = runner->discoverMigrations(tmpDir.string());
     for (size_t i = 1; i < migrations.size(); ++i) {
-        EXPECT_LT(migrations[i - 1].path.filename().string(), migrations[i].path.filename().string());
+        EXPECT_LT(migrations[i - 1].version, migrations[i].version);
     }
 }
 

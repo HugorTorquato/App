@@ -2,10 +2,6 @@
 #include "Runner/MigrationRunner.h"
 #include "Utils/Logger.h"
 
-// TODO:
-//  - How do i know the database is clean on each build? Probably this only happends when restarting the conotainer
-//  - Create the migration for all the domains
-
 int main(int argc, char* argv[]) {
     DbConfig config = DbConfig::fromEnv();
 

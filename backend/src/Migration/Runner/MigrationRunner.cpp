@@ -25,9 +25,8 @@ std::vector<MigrationFile> MigrationRunner::discoverMigrations(const std::string
         }
     }
 
-    std::sort(migrations.begin(), migrations.end(), [](const MigrationFile& a, const MigrationFile& b) {
-        return a.path.filename().string() < b.path.filename().string();
-    });
+    std::sort(migrations.begin(), migrations.end(),
+              [](const MigrationFile& a, const MigrationFile& b) { return a.version < b.version; });
 
     return migrations;
 }
