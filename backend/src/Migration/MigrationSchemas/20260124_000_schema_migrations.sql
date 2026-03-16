@@ -2,6 +2,6 @@
 --- Purpose:  Track applied schema migrations
 
 CREATE TABLE IF NOT EXISTS schema_migrations (
-    version     TEXT PRIMARY KEY,
-    applied_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+    version     TEXT PRIMARY KEY
+    ,applied_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );

@@ -25,9 +25,8 @@ std::vector<MigrationFile> MigrationRunner::discoverMigrations(const std::string
         }
     }
 
-    std::sort(migrations.begin(), migrations.end(), [](const MigrationFile& a, const MigrationFile& b) {
-        return a.path.filename().string() < b.path.filename().string();
-    });
+    std::sort(migrations.begin(), migrations.end(),
+              [](const MigrationFile& a, const MigrationFile& b) { return a.version < b.version; });
 
     return migrations;
 }
@@ -76,8 +75,28 @@ void MigrationRunner::run(const std::string& migrationsDir) {
         Logger::info("[MigrationRunner::run] Applying migration " + path.filename().string());
         session->exec(sql);
         session->execParams("INSERT INTO schema_migrations (version) VALUES ($1)", version);
-        session->commit();
     }
 
+    session->commit();
     Logger::info("[MigrationRunner::run] Migrations completed successfully");
+}
+
+std::vector<std::string> MigrationRunner::getTableNames(IDbSession& session) {
+    std::vector<std::string> tables;
+    pqxx::result rows = session.exec("SELECT tablename FROM pg_tables WHERE schemaname = 'public';");
+    for (auto row : rows) {
+        tables.push_back(row["tablename"].c_str());
+    }
+    return tables;
+}
+
+void MigrationRunner::resetSchemas() {
+    Logger::info("[MigrationRunner::resetSchemas] Dropping all tables...");
+    auto session = m_factory.createSession();
+    for (const auto& table : getTableNames(*session)) {
+        Logger::info("[MigrationRunner::resetSchemas] Dropping: " + table);
+        session->exec("DROP TABLE IF EXISTS " + table + " CASCADE;");
+    }
+    session->commit();
+    Logger::info("[MigrationRunner::resetSchemas] Reset complete.");
 }

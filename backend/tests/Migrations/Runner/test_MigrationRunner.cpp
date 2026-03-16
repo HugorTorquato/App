@@ -23,9 +23,18 @@ class TestMigrationRunner : public MigrationRunner {
     std::unordered_set<std::string> appliedOverride;
     bool useAppliedOverride = false;
 
+    // Controllable table names (used by Reset_* tests)
+    std::vector<std::string> tableNamesOverride;
+    bool useTableNamesOverride = false;
+
    protected:
     std::unordered_set<std::string> getAppliedMigrations(IDbSession&) override {
         if (useAppliedOverride) return appliedOverride;
+        return {};
+    }
+
+    virtual std::vector<std::string> getTableNames(IDbSession&) {
+        if (useTableNamesOverride) return tableNamesOverride;
         return {};
     }
 };
@@ -77,6 +86,30 @@ class MigrationRunnerFsTest : public ::testing::Test {
 
 // ─── Fixture: MigrationRunnerRunTest ─────────────────────────────────────────
 // For run() tests — mocked DB session.
+
+// ─── Fixture: MigrationRunnerResetTest ───────────────────────────────────────
+// For resetSchemas() tests — mocked DB session, no filesystem needed.
+
+class MigrationRunnerResetTest : public ::testing::Test {
+   protected:
+    MockDbConnectionFactory factory;
+    MockDbSession* rawSession = nullptr;
+    TestMigrationRunner* runner = nullptr;
+
+    void SetUp() override {
+        rawSession = new MockDbSession();
+
+        ON_CALL(*rawSession, exec(testing::_)).WillByDefault(testing::Return(pqxx::result{}));
+
+        EXPECT_CALL(factory, createSession())
+            .WillOnce(testing::Return(testing::ByMove(std::unique_ptr<IDbSession>(rawSession))));
+
+        runner = new TestMigrationRunner(factory);
+        runner->useTableNamesOverride = true;
+    }
+
+    void TearDown() override { delete runner; }
+};
 
 class MigrationRunnerRunTest : public ::testing::Test {
    protected:
@@ -150,11 +183,11 @@ TEST_F(MigrationRunnerFsTest, DiscoverMigrations_IgnoresNonSqlFiles) {
     }
 }
 
-// 5 ── discoverMigrations returns results sorted by filename
+// 5 ── discoverMigrations returns results sorted by version
 TEST_F(MigrationRunnerFsTest, DiscoverMigrations_IsSorted) {
     auto migrations = runner->discoverMigrations(tmpDir.string());
     for (size_t i = 1; i < migrations.size(); ++i) {
-        EXPECT_LT(migrations[i - 1].path.filename().string(), migrations[i].path.filename().string());
+        EXPECT_LT(migrations[i - 1].version, migrations[i].version);
     }
 }
 
@@ -215,4 +248,46 @@ TEST_F(MigrationRunnerRunTest, Run_EmptyMigrationsDir) {
     EXPECT_CALL(*rawSession, execParams(testing::_, testing::_)).Times(0);
 
     runner->run(emptyDir.string());
+}
+
+// 12 ── resetSchemas() issues no DROP when there are no tables
+TEST_F(MigrationRunnerResetTest, Reset_NoTables_NothingDropped) {
+    runner->tableNamesOverride = {};
+
+    EXPECT_CALL(*rawSession, exec(testing::HasSubstr("DROP"))).Times(0);
+    EXPECT_CALL(*rawSession, commit()).Times(1);
+
+    runner->resetSchemas();
+}
+
+// 13 ── resetSchemas() issues one DROP per table returned by getTableNames
+TEST_F(MigrationRunnerResetTest, Reset_DropsEachTable) {
+    runner->tableNamesOverride = {"residents", "schema_migrations"};
+
+    EXPECT_CALL(*rawSession, exec(testing::HasSubstr("residents"))).Times(1);
+    EXPECT_CALL(*rawSession, exec(testing::HasSubstr("schema_migrations"))).Times(1);
+    EXPECT_CALL(*rawSession, commit()).Times(1);
+
+    runner->resetSchemas();
+}
+
+// 14 ── resetSchemas() uses CASCADE so FK constraints don't block drops
+TEST_F(MigrationRunnerResetTest, Reset_DropUsesCascade) {
+    runner->tableNamesOverride = {"residents"};
+
+    EXPECT_CALL(*rawSession, exec(testing::AllOf(testing::HasSubstr("DROP TABLE"), testing::HasSubstr("CASCADE"))))
+        .Times(1);
+    EXPECT_CALL(*rawSession, commit()).Times(1);
+
+    runner->resetSchemas();
+}
+
+// 15 ── resetSchemas() calls commit() exactly once regardless of table count
+TEST_F(MigrationRunnerResetTest, Reset_CommitsOnce) {
+    runner->tableNamesOverride = {"table_a", "table_b", "table_c"};
+
+    EXPECT_CALL(*rawSession, exec(testing::_)).Times(testing::AnyNumber());
+    EXPECT_CALL(*rawSession, commit()).Times(1);
+
+    runner->resetSchemas();
 }

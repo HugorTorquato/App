@@ -38,7 +38,8 @@ class MaintenanceRequest {
     int apartmentId;
     std::string description;
     MaintenanceStatus status;  // Open, InProgress, Completed
-    int priority;              // 1–5
+    // TODO: Change this to an enum with values like "Low", "Medium", "High", "Critical"
+    int priority;  // 1–5
     time_t createdAt;
     time_t updatedAt;
 };
