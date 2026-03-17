@@ -2,9 +2,12 @@
 
 #include "../../Utils/Logger.h"
 
+PostgresBuildingRepository::PostgresBuildingRepository(std::unique_ptr<IDbConnectionFactory> factory)
+    : m_factory(std::move(factory)) {}
+
 int PostgresBuildingRepository::save(const Building& building) {
     // Implementation for saving a building to PostgreSQL database
-    int id = nextId++;
+    int id = 0;
     Logger::info(__PRETTY_FUNCTION__ + std::string("Building saved with id: " + std::to_string(id)));
     return id;
 }
@@ -16,6 +19,9 @@ std::optional<Building> PostgresBuildingRepository::findById(int id) {
 
 std::vector<Building> PostgresBuildingRepository::findAll() {
     // Implementation for finding all buildings from PostgreSQL database
+
+    std::vector<Building> buildings;
+
     return {};  // Placeholder return
 }
 
