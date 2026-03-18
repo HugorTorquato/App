@@ -20,6 +20,14 @@ pqxx::result DbSession::execParams(const std::string& query, const std::string& 
     return tx->exec_params(query, param);
 }
 
+pqxx::result DbSession::execParams(const std::string& query, const std::vector<std::string>& params) {
+    std::vector<const char*> cParams;
+    for (const auto& param : params) {
+        cParams.push_back(param.c_str());
+    }
+    return tx->exec_params(query, cParams);
+}
+
 void DbSession::commit() { tx->commit(); }
 
 DbConnectionFactory::DbConnectionFactory(const DbConfig& config) : m_config(config) {}

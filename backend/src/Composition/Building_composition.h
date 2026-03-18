@@ -25,7 +25,7 @@ struct BuildingModule {
 
         // Postgres Default
         Logger::info("[BuildingModule] Using PostgresBuildingRepository (default) (Actual value: " + mode + ")");
-        //TODO: Refactor to connect to a real DB passng the correct connection string
+        // TODO: Refactor to connect to a real DB passng the correct connection string
         return std::make_unique<PostgresBuildingRepository>(std::make_unique<DbConnectionFactory>(DbConfig::fromEnv()));
     }
 };
