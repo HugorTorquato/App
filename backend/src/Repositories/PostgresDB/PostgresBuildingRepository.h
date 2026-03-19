@@ -19,7 +19,7 @@ class PostgresBuildingRepository : public IBuildingRepository {
     void update(const Building& building) override;
     void remove(int id) override;
 
-   protected:
+   private:
     Building mapRowToBuilding(const pqxx::row& row);
 
    private:
