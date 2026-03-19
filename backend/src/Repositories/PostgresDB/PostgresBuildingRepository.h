@@ -19,6 +19,9 @@ class PostgresBuildingRepository : public IBuildingRepository {
     void update(const Building& building) override;
     void remove(int id) override;
 
+   protected:
+    Building mapRowToBuilding(const pqxx::row& row);
+
    private:
     std::unique_ptr<IDbConnectionFactory> m_factory;
 };
