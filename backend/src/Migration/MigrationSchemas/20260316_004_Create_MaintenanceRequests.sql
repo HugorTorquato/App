@@ -1,4 +1,4 @@
---- 20260316_004_Create_MaintenanceRequests.sql
+--- 004_Create_MaintenanceRequests.sql
 --- Purpose:  Create MaintenanceRequests Table
 
 CREATE TABLE IF NOT EXISTS MaintenanceRequests (
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS MaintenanceRequests (
     ,apartment_id       BIGINT NOT NULL REFERENCES Apartments(id) ON DELETE CASCADE
     ,description        TEXT NOT NULL
     ,status             TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'in_progress', 'closed'))
-    ,priority           TEXT NOT NULL DEFAULT 'medium' -- Possible values: 'low', 'medium', 'high'
+    ,priority           INTEGER NOT NULL DEFAULT 2 CHECK (priority BETWEEN 1 AND 3)
     ,created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
     ,updated_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

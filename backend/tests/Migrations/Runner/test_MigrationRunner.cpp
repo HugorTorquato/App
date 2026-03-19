@@ -127,7 +127,10 @@ class MigrationRunnerRunTest : public ::testing::Test {
 
         // ensureSchemaTable and any other exec calls default to returning empty result
         ON_CALL(*rawSession, exec(testing::_)).WillByDefault(testing::Return(pqxx::result{}));
-        ON_CALL(*rawSession, execParams(testing::_, testing::_)).WillByDefault(testing::Return(pqxx::result{}));
+        ON_CALL(*rawSession, execParams(testing::_, testing::An<const std::string&>()))
+            .WillByDefault(testing::Return(pqxx::result{}));
+        ON_CALL(*rawSession, execParams(testing::_, testing::An<const std::vector<std::string>&>()))
+            .WillByDefault(testing::Return(pqxx::result{}));
 
         EXPECT_CALL(factory, createSession())
             .WillOnce(testing::Return(testing::ByMove(std::unique_ptr<IDbSession>(rawSession))));
@@ -221,7 +224,8 @@ TEST_F(MigrationRunnerRunTest, Run_SkipsAlreadyApplied) {
 
     EXPECT_CALL(*rawSession, exec(testing::HasSubstr("CREATE TABLE IF NOT EXISTS schema_migrations"))).Times(1);
     EXPECT_CALL(*rawSession, exec("SELECT 1;")).Times(0);
-    EXPECT_CALL(*rawSession, execParams(testing::_, testing::_)).Times(0);
+    EXPECT_CALL(*rawSession, execParams(testing::_, testing::An<const std::string&>())).Times(0);
+    EXPECT_CALL(*rawSession, execParams(testing::_, testing::An<const std::vector<std::string>&>())).Times(0);
 
     runner->run(tmpDir.string());
 }
@@ -231,7 +235,9 @@ TEST_F(MigrationRunnerRunTest, Run_CommitsSession) {
     runner->appliedOverride = {};
 
     EXPECT_CALL(*rawSession, exec(testing::_)).Times(testing::AnyNumber());
-    EXPECT_CALL(*rawSession, execParams(testing::_, testing::_)).Times(testing::AnyNumber());
+    EXPECT_CALL(*rawSession, execParams(testing::_, testing::An<const std::string&>())).Times(testing::AnyNumber());
+    EXPECT_CALL(*rawSession, execParams(testing::_, testing::An<const std::vector<std::string>&>()))
+        .Times(testing::AnyNumber());
     EXPECT_CALL(*rawSession, commit()).Times(1);
 
     runner->run(tmpDir.string());
@@ -245,12 +251,29 @@ TEST_F(MigrationRunnerRunTest, Run_EmptyMigrationsDir) {
 
     EXPECT_CALL(*rawSession, exec(testing::_)).Times(0);
     EXPECT_CALL(*rawSession, exec(testing::HasSubstr("CREATE TABLE IF NOT EXISTS schema_migrations"))).Times(1);
-    EXPECT_CALL(*rawSession, execParams(testing::_, testing::_)).Times(0);
+    EXPECT_CALL(*rawSession, execParams(testing::_, testing::An<const std::string&>())).Times(0);
+    EXPECT_CALL(*rawSession, execParams(testing::_, testing::An<const std::vector<std::string>&>())).Times(0);
 
     runner->run(emptyDir.string());
 }
 
-// 12 ── resetSchemas() issues no DROP when there are no tables
+// 12 ── run() applies only pending migrations when the set is partially applied
+TEST_F(MigrationRunnerRunTest, Run_AppliesOnlyPendingFromMixed) {
+    writeFile(tmpDir / "20260124_001_Create_Residents.sql", "CREATE TABLE residents();");
+    runner->appliedOverride = {"000"};  // first already applied, second is pending
+
+    EXPECT_CALL(*rawSession, exec(testing::HasSubstr("CREATE TABLE IF NOT EXISTS schema_migrations"))).Times(1);
+    EXPECT_CALL(*rawSession, exec("SELECT 1;")).Times(0);
+    EXPECT_CALL(*rawSession, exec("CREATE TABLE residents();")).Times(1);
+    EXPECT_CALL(*rawSession, execParams("INSERT INTO schema_migrations (version) VALUES ($1)",
+                                        testing::Matcher<const std::string&>(testing::Eq(std::string("001")))))
+        .Times(1);
+    EXPECT_CALL(*rawSession, commit()).Times(1);
+
+    runner->run(tmpDir.string());
+}
+
+// 13 ── resetSchemas() issues no DROP when there are no tables
 TEST_F(MigrationRunnerResetTest, Reset_NoTables_NothingDropped) {
     runner->tableNamesOverride = {};
 

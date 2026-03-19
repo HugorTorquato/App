@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Controllers/BuildingController.h"
+#include "../Repositories/PostgresDB/DbConnectionFactory.h"
 #include "../Repositories/PostgresDB/PostgresBuildingRepository.h"
 #include "../Repositories/inmemory/InMemoryBuildingRepository.h"
 #include "../Services/Building/BuildingService.h"  // Should it be interface?
@@ -24,6 +25,7 @@ struct BuildingModule {
 
         // Postgres Default
         Logger::info("[BuildingModule] Using PostgresBuildingRepository (default) (Actual value: " + mode + ")");
-        return std::make_unique<PostgresBuildingRepository>();
+        // TODO: Refactor to connect to a real DB passng the correct connection string
+        return std::make_unique<PostgresBuildingRepository>(std::make_unique<DbConnectionFactory>(DbConfig::fromEnv()));
     }
 };
