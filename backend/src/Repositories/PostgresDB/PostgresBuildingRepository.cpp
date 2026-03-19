@@ -73,20 +73,29 @@ void PostgresBuildingRepository::update(const Building& building) {
                  " — new name: '" + building.getName() + "'");
 
     auto session = m_factory->createSession();
-    session->execParams("UPDATE buildings SET name = $1, address = $2, num_floors = $3 WHERE id = $4 RETURNING id;",
-                        {building.getName(), building.getAddress(), std::to_string(building.getNumberOfFloors()),
-                         std::to_string(building.getId())});
+    auto result =
+        session->execParams("UPDATE buildings SET name = $1, address = $2, num_floors = $3 WHERE id = $4 RETURNING id;",
+                            {building.getName(), building.getAddress(), std::to_string(building.getNumberOfFloors()),
+                             std::to_string(building.getId())});
+
+    if (result.empty()) throw std::runtime_error("save(): INSERT returned no rows — database did not assign an id");
+
+    int id = result[0]["id"].as<int>();
     session->commit();
-    Logger::info(__PRETTY_FUNCTION__ + std::string(" Building id: ") + std::to_string(building.getId()) +
-                 " updated successfully");
+    Logger::info(__PRETTY_FUNCTION__ + std::string(" Building updated successfully with id: ") + std::to_string(id));
 }
 
 void PostgresBuildingRepository::remove(int id) {
-    // TODO: ID can be 0? or should i scape?
     Logger::info(__PRETTY_FUNCTION__ + std::string(" Removing building with id: ") + std::to_string(id));
 
     auto session = m_factory->createSession();
-    session->execParams("DELETE FROM buildings WHERE id = $1;", std::vector<std::string>{std::to_string(id)});
+    auto result =
+        session->execParams("DELETE FROM buildings WHERE id = $1;", std::vector<std::string>{std::to_string(id)});
+
+    if (result.affected_rows() == 0) {
+        throw std::runtime_error("remove(): DELETE returned no rows — building not found");
+    }
+
     session->commit();
     Logger::info(__PRETTY_FUNCTION__ + std::string(" Building id: ") + std::to_string(id) + " removed successfully");
 }

@@ -235,11 +235,13 @@ TEST_F(PostgresSDBBuildingRepositoryTest, FindByIdDoesNotCommit) {
 // update(const Building& building)
 //
 // Execution path:
-//   createSession() → execParams(UPDATE ... WHERE id = $4) → commit()
+//   createSession() → execParams(UPDATE ... RETURNING id) → throw if empty
+//     → read result[0]["id"] → commit()
 //
-// update() discards the result, so execParams can return pqxx::result{}
-// without crashing — this lets us verify that commit() IS called on success,
-// unlike save() where result access blocks the happy path.
+// update() now reads RETURNING id, same pattern as save(). An empty result
+// means the row was not found and the method throws before reaching commit().
+// Consequence: commit() on success is not unit-testable (needs a real row).
+// See integration tests for that coverage.
 // -----------------------------------------------------------------------------
 
 TEST_F(PostgresSDBBuildingRepositoryTest, UpdateExecutesCorrectSql) {
@@ -250,42 +252,43 @@ TEST_F(PostgresSDBBuildingRepositoryTest, UpdateExecutesCorrectSql) {
     EXPECT_CALL(*session,
                 execParams("UPDATE buildings SET name = $1, address = $2, num_floors = $3 WHERE id = $4 RETURNING id;",
                            ::testing::An<const std::vector<std::string>&>()))
-        .WillOnce(::testing::Return(pqxx::result{}));
-    EXPECT_CALL(*session, commit());
+        .WillOnce(::testing::Throw(std::runtime_error("db")));  // throw to skip result access
 
-    repo.update(*building1);
+    EXPECT_THROW(repo.update(*building1), std::exception);
 }
 
 TEST_F(PostgresSDBBuildingRepositoryTest, UpdatePassesCorrectParams) {
     // Guards against wrong parameter order (e.g. id not last) and against
     // numeric fields not being converted to string.
+    // building1: name="Building A", address="123 Main St", numFloors=10, id=0
     MockDbSession* session = nullptr;
     auto repo = makeRepoWithSession(session);
 
-    // building1: name="Building A", address="123 Main St", numFloors=10, id=0
     const std::vector<std::string> expectedParams = {"Building A", "123 Main St", "10", "0"};
 
-    EXPECT_CALL(*session, execParams(::testing::_, expectedParams)).WillOnce(::testing::Return(pqxx::result{}));
-    EXPECT_CALL(*session, commit());
+    EXPECT_CALL(*session, execParams(::testing::_, expectedParams))
+        .WillOnce(::testing::Throw(std::runtime_error("db")));  // throw to skip result access
 
-    repo.update(*building1);
+    EXPECT_THROW(repo.update(*building1), std::exception);
 }
 
-TEST_F(PostgresSDBBuildingRepositoryTest, UpdateCommitsOnSuccess) {
-    // The UPDATE must be committed — without commit() the change is rolled
-    // back when the session is destroyed.
+TEST_F(PostgresSDBBuildingRepositoryTest, UpdateThrowsWhenDatabaseReturnsNoRows) {
+    // If UPDATE matches no row (building not found), the RETURNING clause
+    // produces an empty result. update() must throw rather than silently
+    // succeed with a stale id.
     MockDbSession* session = nullptr;
     auto repo = makeRepoWithSession(session);
 
     EXPECT_CALL(*session, execParams(::testing::_, ::testing::An<const std::vector<std::string>&>()))
-        .WillOnce(::testing::Return(pqxx::result{}));
-    EXPECT_CALL(*session, commit()).Times(1);
+        .WillOnce(::testing::Return(pqxx::result{}));  // empty — no RETURNING id row
+    EXPECT_CALL(*session, commit()).Times(0);          // must not commit if update found nothing
 
-    repo.update(*building1);
+    EXPECT_THROW(repo.update(*building1), std::runtime_error);
 }
 
 TEST_F(PostgresSDBBuildingRepositoryTest, UpdateDoesNotCommitWhenExecParamsFails) {
-    // If the DB call throws, commit() must not be called.
+    // If the DB call itself throws (connection lost, constraint violation, etc.),
+    // commit() must not be called.
     MockDbSession* session = nullptr;
     auto repo = makeRepoWithSession(session);
 
@@ -300,23 +303,25 @@ TEST_F(PostgresSDBBuildingRepositoryTest, UpdateDoesNotCommitWhenExecParamsFails
 // remove(int id)
 //
 // Execution path:
-//   createSession() → execParams(DELETE ... WHERE id = $1) → commit()
+//   createSession() → execParams(DELETE ... WHERE id = $1)
+//     → throw if affected_rows() == 0 → commit()
 //
-// Same as update(): result is discarded, so commit() IS reachable and
-// can be verified directly.
+// remove() checks affected_rows() on the result. A default-constructed
+// pqxx::result has affected_rows() == 0, so the method throws before
+// reaching commit(). commit() on success is not unit-testable (needs a real
+// affected row count from libpq). See integration tests for that coverage.
 // -----------------------------------------------------------------------------
 
 TEST_F(PostgresSDBBuildingRepositoryTest, RemoveExecutesCorrectSql) {
-    // Guards against wrong table or missing WHERE clause (which would delete everything).
+    // Guards against wrong table or missing WHERE clause (which would delete all rows).
     MockDbSession* session = nullptr;
     auto repo = makeRepoWithSession(session);
 
     EXPECT_CALL(*session,
                 execParams("DELETE FROM buildings WHERE id = $1;", ::testing::An<const std::vector<std::string>&>()))
-        .WillOnce(::testing::Return(pqxx::result{}));
-    EXPECT_CALL(*session, commit());
+        .WillOnce(::testing::Throw(std::runtime_error("db")));  // throw to skip affected_rows check
 
-    repo.remove(1);
+    EXPECT_THROW(repo.remove(1), std::exception);
 }
 
 TEST_F(PostgresSDBBuildingRepositoryTest, RemovePassesIdAsStringParam) {
@@ -325,22 +330,23 @@ TEST_F(PostgresSDBBuildingRepositoryTest, RemovePassesIdAsStringParam) {
     auto repo = makeRepoWithSession(session);
 
     EXPECT_CALL(*session, execParams(::testing::_, std::vector<std::string>{"7"}))
-        .WillOnce(::testing::Return(pqxx::result{}));
-    EXPECT_CALL(*session, commit());
+        .WillOnce(::testing::Throw(std::runtime_error("db")));  // throw to skip affected_rows check
 
-    repo.remove(7);
+    EXPECT_THROW(repo.remove(7), std::exception);
 }
 
-TEST_F(PostgresSDBBuildingRepositoryTest, RemoveCommitsOnSuccess) {
-    // The DELETE must be committed — without commit() the row survives.
+TEST_F(PostgresSDBBuildingRepositoryTest, RemoveThrowsWhenBuildingNotFound) {
+    // If DELETE matches no row (building not found), affected_rows() == 0 and
+    // remove() must throw — silently succeeding on a missing id hides logic bugs
+    // in the caller.
     MockDbSession* session = nullptr;
     auto repo = makeRepoWithSession(session);
 
     EXPECT_CALL(*session, execParams(::testing::_, ::testing::An<const std::vector<std::string>&>()))
-        .WillOnce(::testing::Return(pqxx::result{}));
-    EXPECT_CALL(*session, commit()).Times(1);
+        .WillOnce(::testing::Return(pqxx::result{}));  // affected_rows() == 0
+    EXPECT_CALL(*session, commit()).Times(0);          // must not commit if nothing was deleted
 
-    repo.remove(1);
+    EXPECT_THROW(repo.remove(1), std::runtime_error);
 }
 
 TEST_F(PostgresSDBBuildingRepositoryTest, RemoveDoesNotCommitWhenExecParamsFails) {
