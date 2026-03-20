@@ -60,9 +60,6 @@ services:
   prod:
     profiles: ["test"]
     image: condo_backend_prod
-    build:
-      context: ..
-      dockerfile: backend/Dockerfile
     container_name: app_prod
     networks:
       - condo_net
@@ -89,10 +86,7 @@ services:
   # -------------------------
   migrate:
     profiles: ["test"]
-    image: condo_backend_prod 
-    build:
-      context: ..
-      dockerfile: backend/Dockerfile
+    image: condo_backend_prod
     container_name: condo_db_migrate
     command: ./migrate
     environment:
@@ -120,9 +114,9 @@ services:
       - condo_net
     environment:
       API_URL: http://prod:8080
-    # depends_on:
-    #   prod:
-    #     condition: service_healthy
+    depends_on:
+      prod:
+        condition: service_healthy
 
 volumes:
   condo_pg_data:
